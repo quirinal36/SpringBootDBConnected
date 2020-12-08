@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.BookInfoTableMapper">
+	<select id="getBookInfo" resultType="BookInfo" parameterType="BookInfo">
+		SELECT * FROM BookInfo 
+		<where>
+			id = ${id}
+		</where>
+	</select>
+	
+	<select id="getBookInfoList" resultType="BookInfo" parameterType="BookInfo">
+		SELECT *
+		FROM BookInfo
+		order by id desc
+	</select>
+	
+	<insert id="insert" parameterType="BookInfo">
+		INSERT INTO BookInfo 
+		(title, contents) 
+		VALUES 
+		('${title}', '${contents}');
+	</insert>
+	
+	<update id="update" parameterType="BookInfo">
+		UPDATE BookInfo 
+		SET
+			title = '${title}' ,
+			contents = '${contents}' 
+		<where>
+			id = ${id}
+		</where>
+	</update>
+	
+	<delete id="delete" parameterType="BookInfo">
+		delete from BookInfo
+		where id = ${id}
+	</delete>
+</mapper>
