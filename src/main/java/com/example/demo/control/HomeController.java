@@ -8,17 +8,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.example.demo.model.BookInfo;
-import com.example.demo.service.BookService;
+import com.example.demo.model.WorkLinks;
+import com.example.demo.service.WorkLinksService;
 
 @Controller
 public class HomeController {
 	@Autowired
-	BookService service;
+	WorkLinksService service;
 	
-	@RequestMapping(value="/home", method=RequestMethod.GET)
+	@RequestMapping(value="/", method=RequestMethod.GET)
 	public ModelAndView getView(ModelAndView mv) {
-		List<BookInfo> list = service.selectAll();
+		List<WorkLinks> list = service.selectAll();
 		
 		mv.addObject("list", list);
 		
