@@ -19,6 +19,7 @@ public class UserVO {
 	String role_name;
 	
 	final String enc_key = "solasido";
+	public static final String AUTH = "Authorization";
 	
 	public static final int ROLE_ADMIN = 1;
 	public static final int ROLE_USER = 2;

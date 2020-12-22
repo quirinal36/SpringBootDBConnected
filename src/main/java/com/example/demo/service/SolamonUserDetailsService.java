@@ -15,11 +15,13 @@ import org.springframework.stereotype.Service;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.model.UserVO;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class SolamonUserDetailsService implements UserDetailsService{
 	@Autowired
 	UserMapper mapper;
-	final Logger logger = Logger.getLogger(SolamonUserDetailsService.class.getSimpleName());
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

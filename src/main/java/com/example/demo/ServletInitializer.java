@@ -18,7 +18,7 @@ import com.example.demo.util.BongInterceptor;
 @Configuration
 @ComponentScan(basePackages = {"com.example.demo"})
 public class ServletInitializer extends SpringBootServletInitializer implements WebMvcConfigurer {
-
+	
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 		return application.sources(DemoApplication.class);
@@ -34,7 +34,7 @@ public class ServletInitializer extends SpringBootServletInitializer implements 
 	public void addInterceptors(InterceptorRegistry registry) {
 		BongInterceptor interceptor = new BongInterceptor();
 		registry.addInterceptor(interceptor)
-		.addPathPatterns("/*")
-		.excludePathPatterns("/login", "/signup");
+		.addPathPatterns("/api/v1/**")
+		.excludePathPatterns("/api/v1/login", "/api/v1/signup");
 	}
 }
