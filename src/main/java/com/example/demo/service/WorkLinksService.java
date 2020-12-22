@@ -17,5 +17,17 @@ public class WorkLinksService implements WorkService<WorkLinks> {
 	public List<WorkLinks> selectAll() {
 		return mapper.selectAll();
 	}
+
+	@Override
+	public WorkLinks selectOne(WorkLinks input) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int insert(WorkLinks input) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 }

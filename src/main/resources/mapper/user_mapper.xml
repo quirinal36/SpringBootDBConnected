@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.UserMapper">
+	<select id="getUserInfo" resultType="UserVO" parameterType="UserVO">
+		SELECT * FROM users 
+		<where>
+			id = ${id}
+		</where>
+	</select>
+	
+	<insert id="insert" parameterType="UserVO" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO users 
+		(login, password) 
+		VALUES 
+		('${login}', hex(AES_ENCRYPT('${password}', SHA2('${enc_key}', 512))))
+	</insert>
+	
+	<select id="selectUserByLogin" resultType="UserVO" parameterType="UserVO">
+		SELECT 
+			u.id,
+			u.login, 
+			AES_DECRYPT(unhex(u.password), SHA2('${enc_key}', 512)) AS password, 
+			u.role, 
+			r.name AS role_name
+		FROM 
+		users u 
+			LEFT JOIN roles r on (u.role = r.id)
+		<where>
+			u.login = '${login}'
+		</where>
+	</select>
+</mapper>

@@ -18,4 +18,16 @@ public class BookService implements WorkService<BookInfo> {
 		return mapper.getBookInfoList();
 	}
 
+	@Override
+	public BookInfo selectOne(BookInfo input) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int insert(BookInfo input) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

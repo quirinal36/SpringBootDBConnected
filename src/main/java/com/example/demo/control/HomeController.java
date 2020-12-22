@@ -4,13 +4,16 @@ import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.example.demo.model.UserVO;
 import com.example.demo.model.WorkLinks;
 import com.example.demo.service.WorkLinksService;
 
@@ -37,15 +40,12 @@ public class HomeController {
 		return json.toString();
 	}
 	
+//	@PreAuthorize("hasRole('ROLE_USER')")
 	@GetMapping(value="/home")
 	public ModelAndView homeView(ModelAndView mv) {
 		mv.setViewName("/home.html");
 		return mv;
 	}
 	
-	@GetMapping(value="/login")
-	public ModelAndView loginView(ModelAndView mv) {
-		mv.setViewName("/login.html");
-		return mv;
-	}
+	
 }
