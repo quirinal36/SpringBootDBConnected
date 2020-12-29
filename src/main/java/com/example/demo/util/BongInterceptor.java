@@ -30,14 +30,9 @@ public class BongInterceptor implements HandlerInterceptor{
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, 
-			HttpServletResponse response, Object handler)
-			throws Exception {
+			HttpServletResponse response, Object handler) {
 		log.info("preHandle");
-		if(request.getSession().getAttribute(KEY_ROLE) != null && request.getSession().getAttribute(KEY_ROLE).equals(Role.USER.name())) {
-			return true;
-		}else {
-			throw new CustomAuthenticationException();
-		}
+		return true;
 		/*
 		Map<String, String[]> parameters = request.getParameterMap();
 		Iterator<String> keys = parameters.keySet().iterator();
