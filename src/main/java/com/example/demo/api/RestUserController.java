@@ -1,4 +1,4 @@
-package com.example.demo.control;
+package com.example.demo.api;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.control.AuthenticationRequest;
+import com.example.demo.control.AuthenticationResponse;
 import com.example.demo.model.Result;
 import com.example.demo.model.UserVO;
 import com.example.demo.service.SolamonUserDetailsService;
