@@ -20,6 +20,7 @@ import com.example.demo.model.Result;
 import com.example.demo.model.UserVO;
 import com.example.demo.service.UserService;
 import com.example.demo.service.jwt.JwtService;
+import com.example.demo.util.RedisUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,10 +31,15 @@ public class UserController {
 	UserService service;
 	@Autowired
 	JwtService jwtService;
+	@Autowired
+	RedisUtil redisUtil;
 	
 	@GetMapping(value="/login")
 	public ModelAndView loginView(ModelAndView mv) {
 		mv.setViewName("/login.html");
+		//redisUtil.setData("iam", "stranger");
+		String who = redisUtil.getData("iam");
+		log.info("who: " + who);
 		return mv;
 	}
 	
