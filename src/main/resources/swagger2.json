@@ -17,6 +17,7 @@
 	},
 	"host": "210.117.172.165:8085",
 	"basePath": "/",
+	"schemes":"http",
 	"tags": [{
 		"name": "rest-user-controller",
 		"description": "Rest User Controller"
