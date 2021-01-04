@@ -119,9 +119,6 @@ public class RestUserController {
 	}
 	
 	@PostMapping(value="/list/links")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name="Authorization", value="Access Token", required=true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example="Bearer access_token")
-	})
 	public Result linkList() {
 		Result result = Result.successInstance();
 		result.setData(workService.selectAll());
