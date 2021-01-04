@@ -23,6 +23,7 @@ import com.example.demo.service.SolamonUserDetailsService;
 import com.example.demo.service.UserService;
 import com.example.demo.service.jwt.JwtService;
 import com.example.demo.util.JwtUtil;
+import com.example.demo.util.RedisUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,10 +47,17 @@ public class RestUserController {
 	@Autowired
 	private JwtUtil jwtTokenUtil;
 	
+	@Autowired
+	RedisUtil redisUtil;
+	
 	@RequestMapping(value="/authenticate", method = RequestMethod.POST)
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception{
 		log.info(authenticationRequest.getUsername());
 		log.info(authenticationRequest.getPassword());
+		
+		
+		String who = redisUtil.getData(authenticationRequest.getUsername());
+		log.info("who: " + who);
 		
 		try {
 		authenticationManager.authenticate(
@@ -59,6 +67,7 @@ public class RestUserController {
 		}
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 		final String jwt = jwtTokenUtil.generateToken(userDetails);
+		redisUtil.setData(authenticationRequest.getUsername(), jwt);
 		
 		return ResponseEntity.ok(new AuthenticationResponse(jwt));
 	}
