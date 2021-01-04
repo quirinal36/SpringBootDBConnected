@@ -11,8 +11,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.control.AuthenticationRequest;
@@ -21,10 +23,14 @@ import com.example.demo.model.Result;
 import com.example.demo.model.UserVO;
 import com.example.demo.service.SolamonUserDetailsService;
 import com.example.demo.service.UserService;
+import com.example.demo.service.WorkLinksService;
 import com.example.demo.service.jwt.JwtService;
 import com.example.demo.util.JwtUtil;
 import com.example.demo.util.RedisUtil;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -34,6 +40,9 @@ public class RestUserController {
 	
 	@Autowired
 	UserService service;
+	
+	@Autowired
+	WorkLinksService workService;
 	
 	@Autowired
 	JwtService jwtService;
@@ -50,13 +59,19 @@ public class RestUserController {
 	@Autowired
 	RedisUtil redisUtil;
 	
+	/*
+	@ApiImplicitParams({
+		@ApiImplicitParam(name="TOKEN", value="로그인 성공 후 access token, refresh token", required=true)
+	})
+	*/
+	@ApiOperation(value="auth key 발급", notes="jwt key 발급")
 	@RequestMapping(value="/authenticate", method = RequestMethod.POST)
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception{
 		final int accessTokenDuration = 1000 * 60 * 30;
 		final int refreshTokenDuration = 1000 * 60 * 60 * 10;
 		
-		String who = redisUtil.getData(authenticationRequest.getUsername());
-		log.info("who:" + who);
+//		String who = redisUtil.getData(authenticationRequest.getUsername());
+//		log.info("who:" + who);
 		
 		try {
 			authenticationManager.authenticate(
@@ -67,7 +82,7 @@ public class RestUserController {
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 		final String accessToken = jwtTokenUtil.generateToken(userDetails, accessTokenDuration);
 		final String refreshToken = jwtTokenUtil.generateToken(userDetails, refreshTokenDuration);
-		redisUtil.setData(authenticationRequest.getUsername(), refreshToken);
+		redisUtil.setData(authenticationRequest.getUsername(), refreshToken, refreshTokenDuration);
 		
 		return ResponseEntity.ok(new AuthenticationResponse(accessToken, refreshToken));
 	}
@@ -97,9 +112,19 @@ public class RestUserController {
 	}
 //	@PreAuthorize("hasRole('ROLE_USER')")
 	@GetMapping(value="/member/info")
-	public Result memberInfo(UserVO user) {
+	public Result memberInfo(UserVO user, @RequestBody AuthenticationRequest authenticationRequest) {
 		Result result = Result.successInstance();
 		result.setData("hello");
+		return result;
+	}
+	
+	@PostMapping(value="/list/links")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name="Authorization", value="Access Token", required=true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example="Bearer access_token")
+	})
+	public Result linkList() {
+		Result result = Result.successInstance();
+		result.setData(workService.selectAll());
 		return result;
 	}
 }

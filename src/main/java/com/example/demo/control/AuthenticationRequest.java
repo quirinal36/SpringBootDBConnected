@@ -16,7 +16,4 @@ public class AuthenticationRequest {
 		this.username = username;
 		this.password = password;
 	}
-	
-	
-	
 }
