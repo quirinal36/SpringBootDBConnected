@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -112,12 +113,13 @@ public class RestUserController {
 	}
 //	@PreAuthorize("hasRole('ROLE_USER')")
 	@GetMapping(value="/member/info")
-	public Result memberInfo(UserVO user, @RequestBody AuthenticationRequest authenticationRequest) {
+	public Result memberInfo(UserVO user) {
 		Result result = Result.successInstance();
 		result.setData("hello");
 		return result;
 	}
 	
+	@PreAuthorize("hasRole('ROLE_USER')")
 	@PostMapping(value="/list/links")
 	public Result linkList() {
 		Result result = Result.successInstance();

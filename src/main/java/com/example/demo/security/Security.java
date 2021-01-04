@@ -32,7 +32,6 @@ public class Security extends WebSecurityConfigurerAdapter {
 		http.csrf().disable()
 			.authorizeRequests()
 			.antMatchers(HttpMethod.GET).permitAll()
-			.anyRequest().hasAnyRole("USER","ADMIN")
 			.and()
 			.httpBasic().disable()
 			.sessionManagement()

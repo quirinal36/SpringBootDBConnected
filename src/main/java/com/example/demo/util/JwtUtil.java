@@ -5,12 +5,15 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 @Service
@@ -30,7 +33,7 @@ public class JwtUtil {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
 
@@ -40,11 +43,11 @@ public class JwtUtil {
 
     public String generateToken(UserDetails userDetails, long duration) {
         Map<String, Object> claims = new HashMap<>();
-        return createAccessToken(claims, userDetails.getUsername(), duration);
+        claims.put("role", "user");
+        return createToken(claims, userDetails.getUsername(), duration);
     }
 
-    private String createAccessToken(Map<String, Object> claims, String subject, long duration) {
-
+    private String createToken(Map<String, Object> claims, String subject, long duration) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + duration))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();

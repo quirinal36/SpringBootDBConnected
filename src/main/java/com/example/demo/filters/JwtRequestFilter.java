@@ -1,8 +1,11 @@
 package com.example.demo.filters;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
+import javax.security.auth.message.AuthException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -20,6 +24,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.example.demo.service.SolamonUserDetailsService;
 import com.example.demo.util.JwtUtil;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -49,7 +55,18 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 			boolean isValid = jwtUtil.validateToken(jwt, userDetails);
 			log.info("isValid: " + isValid);
 			if(isValid) {
-				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+				Claims claims = null;
+
+				try {
+					claims = jwtUtil.extractAllClaims(jwt);
+				} catch (JwtException e) {
+//					throw new AuthException().MalformedJwt(jwt);
+				}
+				Set<GrantedAuthority> roles = new HashSet<>();
+				String role = (String) claims.get("role");
+				roles.add(new SimpleGrantedAuthority("ROLE_" + role));
+				
+				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, roles);
 				usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				for(GrantedAuthority c : usernamePasswordAuthenticationToken.getAuthorities()) {
 					log.info("auth: "+c.getAuthority());

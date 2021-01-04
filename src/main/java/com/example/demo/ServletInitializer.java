@@ -39,10 +39,10 @@ public class ServletInitializer extends SpringBootServletInitializer implements 
 	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		BongInterceptor interceptor = new BongInterceptor();
-		registry.addInterceptor(interceptor)
-		.addPathPatterns("/api/v1/**")
-		.excludePathPatterns("/api/v1/login", "/api/v1/signup");
+//		BongInterceptor interceptor = new BongInterceptor();
+//		registry.addInterceptor(interceptor)
+//		.addPathPatterns("/api/v1/**")
+//		.excludePathPatterns("/api/v1/login", "/api/v1/signup");
 	}
 	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder builder) {
