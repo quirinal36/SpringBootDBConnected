@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -21,8 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service("jwtService")
 public class JwtServiceImpl implements JwtService{
-	
-	private static final String SALT = "solasido";
+	@Value("${rest.api.key}")
+	private static String SALT;
 	
 	@Override
 	public <T> String create(String key, T data, String subject) {

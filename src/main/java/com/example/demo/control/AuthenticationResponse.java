@@ -7,10 +7,12 @@ import lombok.Setter;
 @Setter
 public class AuthenticationResponse {
 
-	private final String jwt;
+	private final String accessToken;
+	private final String refreshToken;
 
-	public AuthenticationResponse(String jwt) {
-		this.jwt = jwt;
+	public AuthenticationResponse(String accessToken, String refreshToken) {
+		this.accessToken = accessToken;
+		this.refreshToken = refreshToken;
 	}
 	
 }

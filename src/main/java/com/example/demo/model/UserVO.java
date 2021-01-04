@@ -18,7 +18,9 @@ public class UserVO {
 	String username;
 	String role_name;
 	
-	final String enc_key = "solasido";
+	// @Value("${rest.api.key}")
+	private String enc_key = "solasido";
+	
 	public static final String AUTH = "Authorization";
 	
 	public static final int ROLE_ADMIN = 1;
@@ -28,9 +30,6 @@ public class UserVO {
 	
 	public static final String[] ROLES = {"", ADMIN, USER};
 	
-	public UserVO () {
-		
-	}
 	public static UserVO newInstanse(int id) {
 		UserVO user = new UserVO();
 		user.setId(id);

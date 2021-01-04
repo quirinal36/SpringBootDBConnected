@@ -52,24 +52,23 @@ public class RestUserController {
 	
 	@RequestMapping(value="/authenticate", method = RequestMethod.POST)
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception{
-		log.info(authenticationRequest.getUsername());
-		log.info(authenticationRequest.getPassword());
+		final int accessTokenDuration = 1000 * 60 * 30;
+		final int refreshTokenDuration = 1000 * 60 * 60 * 10;
 		
-		
-		String who = redisUtil.getData(authenticationRequest.getUsername());
-		log.info("who: " + who);
+//		String who = redisUtil.getData(authenticationRequest.getUsername());
 		
 		try {
-		authenticationManager.authenticate(
+			authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
 		}catch(BadCredentialsException e) {
 			throw new Exception("Incorrect username or password", e);
 		}
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-		final String jwt = jwtTokenUtil.generateToken(userDetails);
-		redisUtil.setData(authenticationRequest.getUsername(), jwt);
+		final String accessToken = jwtTokenUtil.generateToken(userDetails, accessTokenDuration);
+		final String refreshToken = jwtTokenUtil.generateToken(userDetails, refreshTokenDuration);
+		redisUtil.setData(authenticationRequest.getUsername(), refreshToken);
 		
-		return ResponseEntity.ok(new AuthenticationResponse(jwt));
+		return ResponseEntity.ok(new AuthenticationResponse(accessToken, refreshToken));
 	}
 	
 	@PostMapping(value="/signup")
