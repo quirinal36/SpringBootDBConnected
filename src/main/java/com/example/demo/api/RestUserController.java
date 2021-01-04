@@ -71,9 +71,6 @@ public class RestUserController {
 		final int accessTokenDuration = 1000 * 60 * 30;
 		final int refreshTokenDuration = 1000 * 60 * 60 * 10;
 		
-//		String who = redisUtil.getData(authenticationRequest.getUsername());
-//		log.info("who:" + who);
-		
 		try {
 			authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
@@ -87,31 +84,6 @@ public class RestUserController {
 		
 		return ResponseEntity.ok(new AuthenticationResponse(accessToken, refreshToken));
 	}
-	
-	@PostMapping(value="/signup")
-	public Result signUp(UserVO user, HttpServletResponse response) {
-		log.info(user.toString());
-		Result result = Result.successInstance();
-		service.insert(user);
-		result.setData(user);
-		
-		return result;
-	}
-	@PostMapping(value="/login")
-	public Result signIn(UserVO user, HttpServletResponse response) {
-		log.debug(user.toString());
-		
-		Result result = Result.successInstance();
-		user = service.selectUserByLogin(user);
-		if(user!= null) {
-			String token = jwtService.create("member", user, "user");
-			response.setHeader(UserVO.AUTH, token);
-			result.setData(user);
-		}
-		
-		return result;
-	}
-//	@PreAuthorize("hasRole('ROLE_USER')")
 	@GetMapping(value="/member/info")
 	public Result memberInfo(UserVO user) {
 		Result result = Result.successInstance();

@@ -20,7 +20,9 @@ import java.util.function.Function;
 public class JwtUtil {
 	@Value("${rest.api.key}")
 	private String SECRET_KEY;
-
+	public static final String ROLES_KEY = "roles";
+	public static final String AUTHORITY_KEY = "AUTHORITY";
+	
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -43,7 +45,7 @@ public class JwtUtil {
 
     public String generateToken(UserDetails userDetails, long duration) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role", "user");
+       	claims.put(JwtUtil.ROLES_KEY, userDetails.getAuthorities());
         return createToken(claims, userDetails.getUsername(), duration);
     }
 
