@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.mapper.UserMapper;
@@ -12,6 +13,9 @@ import com.example.demo.model.UserVO;
 public class UserService implements WorkService<UserVO> {
 	@Autowired
 	UserMapper mapper;
+	
+	@Value("${rest.api.key}")
+	private String SECRET_KEY;
 	
 	@Override
 	public List<UserVO> selectAll() {
@@ -26,6 +30,7 @@ public class UserService implements WorkService<UserVO> {
 	}
 	
 	public UserVO selectUserByLogin(UserVO input) {
+		input.setEnc_key(SECRET_KEY);
 		return mapper.selectUserByLogin(input);
 	}
 

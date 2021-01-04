@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -22,11 +23,14 @@ import lombok.extern.slf4j.Slf4j;
 public class SolamonUserDetailsService implements UserDetailsService{
 	@Autowired
 	UserMapper mapper;
+	@Value("${rest.api.key}")
+	private String SECRET_KEY;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		UserVO param = new UserVO();
 		param.setLogin(username);
+		param.setEnc_key(SECRET_KEY);
 		UserVO user = mapper.selectUserByLogin(param);
 		
 		GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole_name());

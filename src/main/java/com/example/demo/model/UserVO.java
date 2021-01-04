@@ -1,8 +1,5 @@
 package com.example.demo.model;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,8 +15,7 @@ public class UserVO {
 	String username;
 	String role_name;
 	
-	// @Value("${rest.api.key}")
-	private String enc_key = "solasido";
+	private String enc_key;
 	
 	public static final String AUTH = "Authorization";
 	
@@ -34,8 +30,5 @@ public class UserVO {
 		UserVO user = new UserVO();
 		user.setId(id);
 		return user;
-	}
-	public String toJsonString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
 	}
 }
