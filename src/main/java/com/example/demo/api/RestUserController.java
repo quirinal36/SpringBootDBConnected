@@ -55,7 +55,8 @@ public class RestUserController {
 		final int accessTokenDuration = 1000 * 60 * 30;
 		final int refreshTokenDuration = 1000 * 60 * 60 * 10;
 		
-//		String who = redisUtil.getData(authenticationRequest.getUsername());
+		String who = redisUtil.getData(authenticationRequest.getUsername());
+		log.info("who:" + who);
 		
 		try {
 			authenticationManager.authenticate(

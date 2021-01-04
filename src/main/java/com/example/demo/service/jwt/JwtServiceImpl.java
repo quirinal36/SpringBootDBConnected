@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service("jwtService")
 public class JwtServiceImpl implements JwtService{
 	@Value("${rest.api.key}")
-	private static String SALT;
+	private String SALT;
 	
 	@Override
 	public <T> String create(String key, T data, String subject) {
