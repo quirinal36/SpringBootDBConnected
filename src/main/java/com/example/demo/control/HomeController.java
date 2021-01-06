@@ -24,9 +24,9 @@ public class HomeController {
 	
 	@RequestMapping(value="/", method=RequestMethod.GET)
 	public ModelAndView getView(ModelAndView mv) {
-		List<WorkLinks> list = service.selectAll();
+		//List<WorkLinks> list = service.selectAll();
 		
-		mv.addObject("list", list);
+		//mv.addObject("list", list);
 		
 		mv.setViewName("/index.html");
 		return mv;
