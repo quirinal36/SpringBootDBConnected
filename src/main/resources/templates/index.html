@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>K-tech 업무 1218</title>
+<title></title>
 <style type="text/css">
 table{
 	border:1px solid #222222;
@@ -46,13 +46,7 @@ td, th{
 	</tbody>
 </table>
 
-<h3>JBNU instances</h3>
-<ol>
-	<li th:text="i-09beb1a08720fdc97"></li>
-	<li th:text="i-09353da02702cd919"></li>
-	<li th:text="i-0772391701db78309"></li>
-	<li th:text="i-0c156e517c7e97d65"></li>
-</ol>
+<h1 th:text="${profile}"></h1>
 
 <a th:href="@{/doLogout}">
 로그아웃
