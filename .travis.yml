@@ -16,8 +16,6 @@ before_install:
 
 before_deploy:
   - zip -r springboot-swagger *
-  - mkdir -p deploy
-  - mv springboot-swagger.zip deploy/springboot-swagger.zip
   
 deploy:
   - provider: s3
@@ -25,12 +23,26 @@ deploy:
     secret_access_key: $AWS_SECRET_KEY # Travis repo settings에 설정된 값
     bucket: springboot-deploy-storage # 6-3-3에서 생성한 S3 버킷
     region: ap-northeast-2
-    cleanup: true
+    skip_cleanup: true
     acl: public_read
     on:
       repo: quirinal36/SpringBootDBConnected #Github 주소
       branch: master
-
+      
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY # Travis repo settings에 설정된 값
+    secret_access_key: $AWS_SECRET_KEY # Travis repo settings에 설정된 값
+    bucket: springboot-deploy-storage 
+    key: springboot-swagger.zip
+    bundle_type: zip
+    application: SpringBootSwagger
+    deployment_group: SpringBootSwaggerGroup
+    region: ap-northeast-2
+    on:
+      repo: quirinal36/SpringBootDBConnected #Github 주소
+      branch: master
+      
+  
 # CI 실행 완료시 메일로 알람
 notifications:
   email:
