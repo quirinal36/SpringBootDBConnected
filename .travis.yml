@@ -44,7 +44,7 @@ deploy:
     bucket: springboot-deploy-storage # 6-3-3에서 생성한 S3 버킷
     key: springboot-swagger.zip
     bundle_type: zip
-    application: springboot-swagger
+    application: SpringBootSwagger
     deployment_group: SpringBootSwaggerGroup
     region: ap-northeast-2
     wait_until_deployed: true
