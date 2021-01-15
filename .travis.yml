@@ -27,6 +27,7 @@ deploy:
     region: ap-northeast-2
     skip_cleanup: true
     acl: public_read
+    local_dir: deploy
     on:
       repo: quirinal36/SpringBootDBConnected #Github 주소
       branch: master
