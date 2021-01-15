@@ -21,7 +21,7 @@
 			u.login, 
 			AES_DECRYPT(unhex(u.password), SHA2('${enc_key}', 512)) AS password, 
 			u.role, 
-			r.name AS role_name
+			r.role AS role_name
 		FROM 
 		users u 
 			LEFT JOIN roles r on (u.role = r.id)
