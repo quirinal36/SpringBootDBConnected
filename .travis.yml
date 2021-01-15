@@ -16,6 +16,8 @@ before_install:
 
 before_deploy:
   - zip -r springboot-swagger *
+  - mkdir -p deploy
+  - mv springboot-swagger.zip deploy/springboot-swagger.zip
   
 deploy:
   - provider: s3
