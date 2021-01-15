@@ -17,11 +17,11 @@ public class SwaggerConfiguration {
 	public static final String AUTHORIZATION_HEADER = "Authorization";
 
 	  private ApiInfo apiInfo() {
-	    return new ApiInfo("My REST API",
-	        "Some custom description of API.",
-	        "1.0",
+	    return new ApiInfo("Spring REST API",
+	        "My First Swagger UI API",
+	        "1.1",
 	        "Terms of service",
-	        new Contact("Sallo Szrajbman", "www.baeldung.com", "salloszraj@gmail.com"),
+	        new Contact("leehg", "www.jcoding.kr", "turboguy36@gmail.com"),
 	        "License of API",
 	        "API license URL",
 	        Collections.emptyList());
