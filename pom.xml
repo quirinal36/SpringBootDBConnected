@@ -11,6 +11,12 @@
 	<groupId>com.example</groupId>
 	<artifactId>demo</artifactId>
 	<version>0.0.2-SNAPSHOT</version>
+	<scm>
+	    <connection>scm:git:https://github.com/quirinal36/SpringBootDBConnected.git</connection>
+	    <developerConnection>scm:git:https://github.com/quirinal36/SpringBootDBConnected.git</developerConnection>
+	    <tag>HEAD</tag>
+	    <url>https://github.com/quirinal36/SpringBootDBConnected</url>
+	  </scm>
 	<packaging>war</packaging>
 	<name>demo</name>
 	<description>Demo project for Spring Boot</description>
