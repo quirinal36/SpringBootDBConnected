@@ -29,4 +29,16 @@
 			u.login = '${login}'
 		</where>
 	</select>
+	<select id="selectAll" resultType="UserVO">
+		SELECT
+			*
+		FROM users
+	</select>
+	<update id="update" parameterType="UserVO">
+		UPDATE users
+		SET
+			name = '${name}'
+		where
+			id = ${id}
+	</update>
 </mapper>

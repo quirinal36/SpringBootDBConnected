@@ -19,8 +19,7 @@ public class UserService implements WorkService<UserVO> {
 	
 	@Override
 	public List<UserVO> selectAll() {
-		// TODO Auto-generated method stub
-		return null;
+		return mapper.selectAll();
 	}
 
 	@Override
@@ -38,6 +37,11 @@ public class UserService implements WorkService<UserVO> {
 	public int insert(UserVO input) {
 		input.setEnc_key(SECRET_KEY);
 		return mapper.insert(input);
+	}
+
+	@Override
+	public int update(UserVO input) {
+		return mapper.update(input);
 	}
 	
 	

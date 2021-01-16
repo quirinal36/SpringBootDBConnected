@@ -12,7 +12,7 @@ public class UserVO {
 	int role;
 	String login;
 	String password;
-	String username;
+	String name;
 	String role_name;
 	
 	private String enc_key;

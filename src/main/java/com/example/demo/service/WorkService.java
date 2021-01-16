@@ -6,4 +6,5 @@ public interface WorkService <T> {
 	public List<T> selectAll();
 	public T selectOne(T input);
 	public int insert(T input);
+	public int update(T input);
 }

@@ -20,11 +20,12 @@ import com.example.demo.model.Result;
 import com.example.demo.model.UserVO;
 import com.example.demo.service.SolamonUserDetailsService;
 import com.example.demo.service.UserService;
-import com.example.demo.service.WorkLinksService;
 import com.example.demo.service.jwt.JwtService;
 import com.example.demo.util.JwtUtil;
 import com.example.demo.util.RedisUtil;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,9 +36,6 @@ public class RestUserController {
 	
 	@Autowired
 	UserService service;
-	
-	@Autowired
-	WorkLinksService workService;
 	
 	@Autowired
 	JwtService jwtService;
@@ -83,18 +81,20 @@ public class RestUserController {
 		
 		return ResponseEntity.ok(new AuthenticationResponse(accessToken, refreshToken));
 	}
+	
+	@ApiOperation(value="api test", notes="get test")
 	@GetMapping(value="/member/info")
-	public Result memberInfo(UserVO user) {
+	public Result memberInfo() {
 		Result result = Result.successInstance();
-		result.setData("hello");
+		result.setData(service.selectAll());
 		return result;
 	}
 	
 	@PreAuthorize("hasRole('ROLE_USER')")
-	@PostMapping(value="/list/links")
-	public Result linkList() {
+	@PostMapping(value="/member/edit")
+	public Result memberEdit(UserVO user) {
 		Result result = Result.successInstance();
-		result.setData(workService.selectAll());
+		result.setData(service.update(user));
 		return result;
 	}
 	
