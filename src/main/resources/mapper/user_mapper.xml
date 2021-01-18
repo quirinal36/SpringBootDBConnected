@@ -31,8 +31,13 @@
 	</select>
 	<select id="selectAll" resultType="UserVO">
 		SELECT
-			*
-		FROM users
+			u.id,
+			u.login,
+			u.name,
+			r.role AS role_name
+		FROM 
+		users u 
+			LEFT JOIN roles r on (u.role = r.id)
 	</select>
 	<update id="update" parameterType="UserVO">
 		UPDATE users
