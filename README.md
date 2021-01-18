@@ -10,3 +10,5 @@
 5. Travis-ci 
 6. CodeDeploy
 
+프로젝트를 구현중인 시스템 구조도
+![structure](./structure.jpg)
