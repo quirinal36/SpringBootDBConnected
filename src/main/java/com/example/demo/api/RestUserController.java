@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.control.AuthenticationRequest;
 import com.example.demo.control.AuthenticationResponse;
+import com.example.demo.model.JwtModel;
 import com.example.demo.model.Result;
 import com.example.demo.model.UserVO;
 import com.example.demo.service.SolamonUserDetailsService;
 import com.example.demo.service.UserService;
-import com.example.demo.service.jwt.JwtService;
 import com.example.demo.util.JwtUtil;
 import com.example.demo.util.RedisUtil;
 
@@ -55,9 +55,6 @@ public class RestUserController {
 	@ApiOperation(value="auth key 발급", notes="jwt key 발급")
 	@RequestMapping(value="/authenticate", method = RequestMethod.POST)
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception{
-		final int accessTokenDuration = 1000 * 60 * 30;
-		final int refreshTokenDuration = 1000 * 60 * 60 * 10;
-		
 		try {
 			authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
@@ -66,9 +63,9 @@ public class RestUserController {
 		}
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 		
-		final String accessToken = jwtTokenUtil.generateToken(userDetails, accessTokenDuration);
-		final String refreshToken = jwtTokenUtil.generateToken(userDetails, refreshTokenDuration);
-		redisUtil.setData(authenticationRequest.getUsername(), refreshToken, refreshTokenDuration);
+		final String accessToken = jwtTokenUtil.generateToken(userDetails, JwtModel.accessTokenDuration);
+		final String refreshToken = jwtTokenUtil.generateToken(userDetails, JwtModel.refreshTokenDuration);
+		redisUtil.setData(authenticationRequest.getUsername(), refreshToken, JwtModel.refreshTokenDuration);
 		
 		return ResponseEntity.ok(new AuthenticationResponse(accessToken, refreshToken));
 	}
