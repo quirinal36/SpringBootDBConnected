@@ -1,0 +1,13 @@
+com.example.demo
+com.example.demo.api
+com.example.demo.conf
+com.example.demo.control
+com.example.demo.core
+com.example.demo.error
+com.example.demo.filters
+com.example.demo.mapper
+com.example.demo.model
+com.example.demo.security
+com.example.demo.service
+com.example.demo.service.jwt
+com.example.demo.util
