@@ -56,6 +56,7 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		final String authorizationHeader = request.getHeader("Authorization");
+		
 		String username = null;
 		String jwt = null;
 		TOKEN_TYPE tokenType = TOKEN_TYPE.ACCESS_TOKEN;
@@ -78,17 +79,14 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 			}
 		}
 		if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-			log.info("if start");
 			// 사용자 아이디로 해당 정보가 있는지 확인함
 			UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-			log.info("user>>>>" + userDetails.getUsername());
+			
 			// 토큰의 유효성을 확인
 			try {
 				if(this.jwtUtil.validateToken( jwt, userDetails, tokenType)) {
-					log.info("isValid success");
 					UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 					token.setDetails(new WebAuthenticationDetailsSource().buildDetails( request));
-					log.info("token: " + token);
 					// Security에 인증값 추가
 					SecurityContextHolder.getContext().setAuthentication(token);					
 				}

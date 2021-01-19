@@ -31,6 +31,7 @@ public class Security extends WebSecurityConfigurerAdapter {
 		http.csrf().disable()
 			.authorizeRequests()
 			.antMatchers(HttpMethod.GET).permitAll()
+			.antMatchers(HttpMethod.POST).authenticated()
 			.and()
 			.httpBasic().disable()
 			.sessionManagement()
