@@ -1,18 +1,18 @@
 package com.example.demo.control;
 
+import com.example.demo.model.JwtModel;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class AuthenticationResponse {
+	private JwtModel jwt;
 
-	private final String accessToken;
-	private final String refreshToken;
-
-	public AuthenticationResponse(String accessToken, String refreshToken) {
-		this.accessToken = accessToken;
-		this.refreshToken = refreshToken;
+	public AuthenticationResponse(JwtModel jwt) {
+		super();
+		this.jwt = jwt;
 	}
 	
 }

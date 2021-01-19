@@ -2,13 +2,10 @@ package com.example.demo.api;
 
 import java.util.Optional;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,10 +19,8 @@ import com.example.demo.control.AuthenticationResponse;
 import com.example.demo.model.JwtModel;
 import com.example.demo.model.Result;
 import com.example.demo.model.UserVO;
-import com.example.demo.service.SolamonUserDetailsService;
 import com.example.demo.service.UserService;
 import com.example.demo.util.JwtUtil;
-import com.example.demo.util.RedisUtil;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -41,43 +36,46 @@ public class RestUserController {
 	private UserService service;
 	
 	@Autowired
-	private AuthenticationManager authenticationManager;
-	
-	@Autowired
-	private SolamonUserDetailsService userDetailsService;
-	
-	@Autowired
 	private JwtUtil jwtTokenUtil;
 	
-	@Autowired
-	private RedisUtil redisUtil;
-	
+	/**
+	 * login, password 값을 활용해 access token, refresh token 값 발급
+	 * @param authenticationRequest
+	 * @return
+	 * @throws Exception
+	 */
 	@ApiOperation(value="auth key 발급", notes="jwt key 발급")
 	@RequestMapping(value="/authenticate", method = RequestMethod.POST)
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception{
-		try {
-			authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
-		}catch(BadCredentialsException e) {
-			throw new Exception("Incorrect username or password", e);
-		}
-		final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+		JwtModel token = jwtTokenUtil.makeJwt(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 		
-		final String accessToken = jwtTokenUtil.generateToken(userDetails, JwtModel.accessTokenDuration);
-		final String refreshToken = jwtTokenUtil.generateToken(userDetails, JwtModel.refreshTokenDuration);
-		redisUtil.setData(authenticationRequest.getUsername(), refreshToken, JwtModel.refreshTokenDuration);
-		
-		return ResponseEntity.ok(new AuthenticationResponse(accessToken, refreshToken));
+		return ResponseEntity.ok(new AuthenticationResponse(token));
 	}
 	
-//	public ResponseEntity<?> 
+	/**
+	 * refresh token을 이용해 access token 과 refresh token 재발급
+	 * @return
+	 * @throws Exception
+	 */
+	@ApiOperation(value="refresh token을 이용해 access token 과 refresh token 재발급", notes="jwt key 재발급")
+	@RequestMapping( value = "/get_access_token", method = RequestMethod.POST)
+	public ResponseEntity<?> get_access_token() throws Exception{
+		JwtModel token = this.jwtTokenUtil.makeReJwt();
+		return ResponseEntity.ok(new AuthenticationResponse(token));
+	}
 	
+	/**
+	 * 유저 권한 변경하기
+	 * @param id
+	 * @param role
+	 * @return
+	 */
 	@ApiImplicitParams({
 		@ApiImplicitParam(name="id", value="user id", required=true, dataType="int", defaultValue="0"),
 		@ApiImplicitParam(name="role", value="authorization role", required=true, dataType="int", defaultValue="0")
 	})
 	@ApiOperation(value="관리자만 실행가능", notes="유저 권한변경", response=Result.class)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RolesAllowed("ROLE_ADMIN")
 	@PostMapping(value="/member/grant")
 	public Result grantAuth(@RequestParam(value="id", required=true, defaultValue="0", name="id")Optional<Integer> id, 
 			@RequestParam(value="role", required=true, defaultValue="0", name="role")Optional<Integer> role) {
@@ -86,13 +84,16 @@ public class RestUserController {
 		UserVO user = new UserVO();
 		user.setId(id.get());
 		user.setRole(role.get());
-		log.info(user.toString());
 		int updateResult = service.update(user);
 		
 		result.setData("result:"+updateResult);
 		return result;
 	}
 	
+	/**
+	 * 모든 멤버 정보 가져오기
+	 * @return
+	 */
 	@ApiOperation(value="모든 멤버들 정보 가져오기", notes="")
 	@GetMapping(value="/member/info")
 	public Result memberInfo() {
@@ -101,12 +102,18 @@ public class RestUserController {
 		return result;
 	}
 	
+	/**
+	 * 회원정보 수정하기
+	 * @param id
+	 * @param name
+	 * @return
+	 */
 	@ApiImplicitParams({
 		@ApiImplicitParam(name="id", value="user id", required=true, dataType="int", defaultValue="0"),
 		@ApiImplicitParam(name="name", value="user name", required=true, dataType="String")
 	})
 	@ApiOperation(value="User 정보 수정하기", notes="name 값만 수정 가능")
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
 	@PostMapping(value="/member/edit")
 	public Result memberEdit(@RequestParam(value="id", required=true, defaultValue="0", name="id")Optional<Integer> id,
 			@RequestParam(value="name", required=true, name="name")Optional<String> name) {
@@ -119,6 +126,13 @@ public class RestUserController {
 		return result;
 	}
 	
+	/**
+	 * 회원정보 추가하기 
+	 * @param login
+	 * @param password
+	 * @param name
+	 * @return
+	 */
 	@ApiImplicitParams({
 		@ApiImplicitParam(name="login", value="user login", required=true, dataType="String"),
 		@ApiImplicitParam(name="password", value="user password", required=true, dataType="String"),
@@ -140,6 +154,4 @@ public class RestUserController {
 		result.setData(insertResult);
 		return result;
 	}
-	
-	
 }

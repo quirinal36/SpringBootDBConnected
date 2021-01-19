@@ -14,7 +14,7 @@ public class UserService implements WorkService<UserVO> {
 	@Autowired
 	UserMapper mapper;
 	
-	@Value("${rest.api.key}")
+	@Value("${jwt.access.token.secure.key}")
 	private String SECRET_KEY;
 	
 	@Override

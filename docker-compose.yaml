@@ -1,13 +1,16 @@
-version: '2'
+version: '3'
 
 services:
   db:
     image: mariadb
+    container_name: 'mariadb'
     command: --default-authentication-plugin=mysql_native_password
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - db-data:/var/lib/mysql
     restart: always
-    environment: 
+    environment:
       MYSQL_ROOT_PASSWORD: 1111
       MYSQL_DATABASE: jca
       MYSQL_USER: leehg
@@ -16,47 +19,30 @@ services:
       - 3306:3306
 
   tomcat:
-    image: 'docker.io/bitnami/tomcat:9.0-debian-10'
+    image: tomcat:9
+    container_name: 'tomcat'
     environment:
       JDBC_URL: jdbc:mysql://db:3306/jca
       JDBC_USER: leehg
       JDBC_PASS: 789gagul
     links:
       - db
+    ports:
+      - '80:8080'
     volumes:
-      - 'tomcat_data:/bitnami'
+      - 'tomcat_data:/usr/local/tomcat/webapps/'
     restart:
       always
-    build:
-      context: .
-      dockerfile : Dockerfile-tomcat
-    ports:
-      - "80:8080"
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8090:8080
+
   redis:
     image: redis
+    container_name: 'redis'
     command: redis-server --requirepass changeme --port 6379
     restart: always
     ports:
       - 6379:6379
-  jenkins:
-    image: 'jenkins/jenkins:latest'
-    container_name: 'jenkins'
-    restart: always
-    ports:
-      - '8100:8080'
-      - '50100:50000'
-    expose:
-      - '8080'
-      - '50000'
-    volumes:
-      - './jenkins_home:/var/jenkins_home'
-    environment:
-      TZ: "Asia/Seoul"
 volumes:
   tomcat_data:
+    driver: local
+  db-data:
     driver: local

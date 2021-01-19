@@ -1,6 +1,22 @@
 package com.example.demo.model;
 
 public class JwtModel {
-	public static final int accessTokenDuration = 1000 * 60 * 30;
-	public static final int refreshTokenDuration = 1000 * 60 * 60 * 10;
+
+	private final String accessToken;
+	private final String refreshToken;
+
+	public JwtModel(String accessToken, String refreshToken) {
+		super();
+		this.accessToken = accessToken;
+		this.refreshToken = refreshToken;
+	}
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public String getRefreshToken() {
+		return refreshToken;
+	}
+
 }
