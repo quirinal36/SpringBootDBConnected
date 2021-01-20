@@ -16,23 +16,9 @@ services:
       MYSQL_USER: leehg
       MYSQL_PASSWORD: 789gagul
     ports:
-      - 3306:3306
-
-  tomcat:
-    image: tomcat:9
-    container_name: 'tomcat'
-    environment:
-      JDBC_URL: jdbc:mysql://db:3306/jca
-      JDBC_USER: leehg
-      JDBC_PASS: 789gagul
-    links:
-      - db
-    ports:
-      - '80:8080'
-    volumes:
-      - 'tomcat_data:/usr/local/tomcat/webapps/'
-    restart:
-      always
+      - 33000:3306
+    expose:
+      - 33000
 
   redis:
     image: redis
@@ -41,6 +27,26 @@ services:
     restart: always
     ports:
       - 6379:6379
+    expose:
+      - 6379
+      
+  tomcat:
+    image: tomcat:9
+    container_name: 'tomcat'
+    environment:
+      JDBC_URL: jdbc:mysql://db:33000/jca
+      JDBC_USER: leehg
+      JDBC_PASS: 789gagul
+    links:
+      - db
+      - redis
+    ports:
+      - '80:8080'
+    volumes:
+      - 'tomcat_data:/usr/local/tomcat/webapps/'
+    restart:
+      always
+
 volumes:
   tomcat_data:
     driver: local
