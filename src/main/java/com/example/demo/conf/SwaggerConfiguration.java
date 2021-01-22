@@ -24,24 +24,13 @@ public class SwaggerConfiguration {
     private Environment environment;
 	
 	private ApiInfo apiInfo() {
-		
-		
-		for(String p : environment.getActiveProfiles()) {
-			profile = p;
-		}
-		
-		if(profile == null) {
-			System.setProperty("spring.profiles.active", "live");
-		}
-		
-		String title = new StringBuilder().append("Spring REST API - ").append(profile).toString();
-		return new ApiInfo(title,
-				"My First Swagger UI API",
+		return new ApiInfo("Spring REST API",
+				"Swagger UI",
 				"1.0",
-				"Terms of service",
-				new Contact("leehg", "www.jcoding.kr", "turboguy36@gmail.com"),
-				"License of API",
-				"API license URL",
+				null,
+				new Contact("leehg", "http://www.jcoding.kr", "turboguy36@gmail.com"),
+				null,
+				null,
 				Collections.emptyList());
 	}
 
