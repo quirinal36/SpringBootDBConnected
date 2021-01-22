@@ -146,9 +146,15 @@ public class RestUserController {
 		Result result = Result.successInstance();
 		
 		UserVO user = new UserVO();
-		user.setLogin(login.get());
-		user.setPassword(password.get());
-		user.setName(name.get());
+		if(login.isPresent()) {
+			user.setLogin(login.get());
+		}
+		if(password.isPresent()) {
+			user.setPassword(password.get());
+		}
+		if(name.isPresent()) {
+			user.setName(name.get());
+		}
 		
 		int insertResult = service.insert(user);
 		result.setData(insertResult);

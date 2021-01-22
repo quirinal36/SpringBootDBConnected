@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@Profile(value="prod")
-@PropertySource({"classpath:/application.properties"})
+@Profile(value="live")
+@PropertySource({"classpath:profiles/live/application-live.properties"})
 public class ProfileProduction {
 
 }

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @Profile(value="dev")
-@PropertySource({"classpath:/application.properties"})
+@PropertySource({"classpath:profiles/dev/application-dev.properties"})
 public class ProfileDevelop {
 
 }
