@@ -13,4 +13,5 @@ public class BoardVO {
 	String title;
 	String content;
 	Date wdate;
+	String writerName;
 }
