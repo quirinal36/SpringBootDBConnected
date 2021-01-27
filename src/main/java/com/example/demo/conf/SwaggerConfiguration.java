@@ -18,8 +18,7 @@ import java.util.List;
 @Configuration
 public class SwaggerConfiguration {
 	public static final String AUTHORIZATION_HEADER = "Authorization";
-	@Value("${spring.profile.value}")
-	private String profile;
+	
 	@Autowired
     private Environment environment;
 	
