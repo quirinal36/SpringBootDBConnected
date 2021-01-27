@@ -12,4 +12,5 @@ public interface UserMapper {
 	public int insert(UserVO input);
 	public int update(UserVO input);
 	public List<UserVO> selectAll();
+	public UserVO selectUserByEmail(UserVO input);
 }

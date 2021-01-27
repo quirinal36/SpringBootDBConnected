@@ -15,9 +15,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.example.demo.filters.JwtRequestFilter;
+import com.example.demo.service.CustomOAuth2UserService;
 import com.example.demo.service.SolamonUserDetailsService;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class Security extends WebSecurityConfigurerAdapter {
@@ -26,6 +29,9 @@ public class Security extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
+	
+	private final CustomOAuth2UserService customOAuth2UserService;
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable()
@@ -35,7 +41,9 @@ public class Security extends WebSecurityConfigurerAdapter {
 			.and()
 			.httpBasic().disable()
 			.sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+            .oauth2Login().userInfoEndpoint().userService(customOAuth2UserService);
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 	

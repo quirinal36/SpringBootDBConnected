@@ -32,7 +32,11 @@ public class UserService implements WorkService<UserVO> {
 		input.setEnc_key(SECRET_KEY);
 		return mapper.selectUserByLogin(input);
 	}
-
+	public UserVO selectUserByEmail(String email) {
+		UserVO input = new UserVO();
+		input.setEmail(email);
+		return mapper.selectUserByEmail(input);
+	}
 	@Override
 	public int insert(UserVO input) {
 		input.setEnc_key(SECRET_KEY);
