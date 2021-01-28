@@ -3,6 +3,7 @@ package com.example.demo.service;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,11 +15,14 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.model.OAuthAttribute;
+import com.example.demo.conf.auth.dto.OAuthAttribute;
 import com.example.demo.model.UserVO;
+
+import jdk.internal.org.jline.utils.Log;
 
 import java.util.Collections;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
@@ -52,6 +56,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 	}
 	private UserVO saveOrUpdate(OAuthAttribute attribute) {
 		UserVO user = service.selectUserByEmail(attribute.getEmail());
+		log.info("attr: "+attribute.toString());
+		log.info("user: "+user.toString());
 		return user;
 	}
 }

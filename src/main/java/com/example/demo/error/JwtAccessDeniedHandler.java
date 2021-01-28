@@ -2,6 +2,7 @@ package com.example.demo.error;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
@@ -14,8 +15,10 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
-
-    private final HandlerExceptionResolver handlerExceptionResolver;
+//
+//	@Autowired
+//	@Qualifier("handlerExceptionResolver")
+//    private final HandlerExceptionResolver handlerExceptionResolver;
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
@@ -25,6 +28,6 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         //동작하지 않음!!
         //throw new CustomAuthenticationException();
 
-        handlerExceptionResolver.resolveException(request, response, null, accessDeniedException);
+//        handlerExceptionResolver.resolveException(request, response, null, accessDeniedException);
     }
 }

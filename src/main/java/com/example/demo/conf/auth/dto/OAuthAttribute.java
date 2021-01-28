@@ -1,8 +1,11 @@
-package com.example.demo.model;
+package com.example.demo.conf.auth.dto;
 
 import lombok.Getter;
 import lombok.Builder;
 import java.util.Map;
+
+import com.example.demo.model.Role;
+import com.example.demo.model.UserVO;
 
 @Getter
 public class OAuthAttribute {
@@ -34,12 +37,11 @@ public class OAuthAttribute {
                 .build();
     }
     public UserVO toEntity() {
-    	UserVO user = new UserVO();
-    	user.setName(name);
-    	user.setEmail(email);
-    	user.setPicture(picture);
-    	user.setRoleType(Role.USER);
-    	user.setRole(2);
-    	return user;
+    	return UserVO.builder()
+    			.name(name)
+    			.email(email)
+    			.picture(picture)
+    			.roleType(Role.USER)
+    			.build();
     }
 }
