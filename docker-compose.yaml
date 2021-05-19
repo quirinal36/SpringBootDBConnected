@@ -46,7 +46,24 @@ services:
       - 'tomcat_data:/usr/local/tomcat/webapps/'
     restart:
       always
-
+      
+  tomcat2:
+    image: tomcat:9
+    container_name: 'tomcat2'
+    environment:
+      JDBC_URL: jdbc:mysql://db:3306/jca
+      JDBC_USER: leehg
+      JDBC_PASS: 789gagul
+    links:
+      - db
+      - redis
+    ports:
+      - '8080:8080'
+    volumes:
+      - 'tomcat_data:/usr/local/tomcat/webapps/'
+    restart:
+      always
+  
 volumes:
   tomcat_data:
     driver: local

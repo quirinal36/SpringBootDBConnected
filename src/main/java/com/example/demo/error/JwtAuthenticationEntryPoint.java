@@ -14,7 +14,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private final HandlerExceptionResolver handlerExceptionResolver;
+//    private final HandlerExceptionResolver handlerExceptionResolver;
 
     @Override
     public void commence(HttpServletRequest request,
@@ -22,7 +22,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          AuthenticationException authException) throws IOException {
 
         //response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
-        handlerExceptionResolver.resolveException(request, response, null, authException);
+//        handlerExceptionResolver.resolveException(request, response, null, authException);
 
     }
 }

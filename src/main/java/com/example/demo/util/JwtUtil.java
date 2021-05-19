@@ -9,6 +9,8 @@ import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.extern.slf4j.Slf4j;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -54,6 +56,8 @@ public class JwtUtil {
 	
 	@Autowired
 	private SolamonUserDetailsService userDetailsService;
+	
+	Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 	
 	public JwtUtil(@Value("${jwt.access.token.secure.key}")String ACCESS_KEY,
 			@Value("${jwt.refresh.token.secure.key}")String REFRESH_KEY,
@@ -239,14 +243,15 @@ public class JwtUtil {
 	 * @throws CommonException
 	 */
 	public JwtModel makeJwt( String username, String password) throws CommonException {
-		
+		logger.info("username: " + username);
 		try {
 			this.authenticationManager
 					.authenticate( 
 						new UsernamePasswordAuthenticationToken( 
 								username, 
 								password));
-			final UserDetails user = userDetailsService.loadUserByUsername( username);
+			final UserDetails user = userDetailsService.loadUserByUsername(username);
+			logger.info(user.toString());
 			final JwtModel jwt = this.generateToken(user);
 			
 			return jwt;

@@ -9,7 +9,9 @@ import com.example.demo.model.UserVO;
 @Mapper
 public interface UserMapper {
 	public UserVO selectUserByLogin(UserVO input);
+	public UserVO selectUserById(UserVO input);
 	public int insert(UserVO input);
 	public int update(UserVO input);
 	public List<UserVO> selectAll();
+	public UserVO selectUserByEmail(UserVO input);
 }

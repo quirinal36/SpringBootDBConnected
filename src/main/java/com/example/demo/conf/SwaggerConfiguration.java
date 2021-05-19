@@ -18,6 +18,7 @@ import java.util.List;
 @Configuration
 public class SwaggerConfiguration {
 	public static final String AUTHORIZATION_HEADER = "Authorization";
+
 	@Autowired
     private Environment environment;
 	

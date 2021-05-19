@@ -24,15 +24,21 @@ public class UserService implements WorkService<UserVO> {
 
 	@Override
 	public UserVO selectOne(UserVO input) {
-		// TODO Auto-generated method stub
-		return null;
+		return mapper.selectUserByLogin(input);
 	}
 	
+	public UserVO selectById(UserVO input) {
+		return mapper.selectUserById(input);
+	}
 	public UserVO selectUserByLogin(UserVO input) {
 		input.setEnc_key(SECRET_KEY);
 		return mapper.selectUserByLogin(input);
 	}
-
+	public UserVO selectUserByEmail(String email) {
+		UserVO input = new UserVO();
+		input.setEmail(email);
+		return mapper.selectUserByEmail(input);
+	}
 	@Override
 	public int insert(UserVO input) {
 		input.setEnc_key(SECRET_KEY);

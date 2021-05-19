@@ -15,9 +15,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.example.demo.filters.JwtRequestFilter;
+import com.example.demo.service.CustomOAuth2UserService;
 import com.example.demo.service.SolamonUserDetailsService;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class Security extends WebSecurityConfigurerAdapter {
@@ -26,16 +29,22 @@ public class Security extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
+	
+	private final CustomOAuth2UserService customOAuth2UserService;
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable()
 			.authorizeRequests()
 			.antMatchers(HttpMethod.GET).permitAll()
 			.antMatchers(HttpMethod.POST).authenticated()
+			.antMatchers("/auth/**", "/oauth2/**").permitAll()
 			.and()
 			.httpBasic().disable()
 			.sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+            .oauth2Login().userInfoEndpoint().userService(customOAuth2UserService);
 		http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 	
@@ -47,7 +56,7 @@ public class Security extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/v2/api-docs","/swagger-resources/**",
                 "/swagger-ui/*", "/api/v1/authenticate", 
-                "/api/v1/user/add", "/api/v1/get_access_token");
+                "/api/v1/member/add", "/api/v1/get_access_token");
 	}
 	@Bean
 	@Override

@@ -1,15 +1,21 @@
 package com.example.demo.api;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.security.RolesAllowed;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.model.BoardVO;
 import com.example.demo.model.Result;
@@ -68,5 +74,27 @@ public class RestBoardController {
 		List<BoardVO> list = service.selectAll();
 		result.setData(list);
 		return result;
+	}
+	
+	/**
+	 * 파일 업로드
+	 */
+	@GetMapping("/upload")
+	public String upload(@RequestParam("data")MultipartFile file)throws IOException{
+		File convertedFile = convert(file);
+		JSONObject json = new JSONObject();
+		json.put("name",convertedFile.getName());
+		return json.toString();
+	}
+	private final static String TEMP_FILE_PATH = "src/main/resources/";
+	private File convert(MultipartFile file) throws IOException {
+		File convertFile = new File(TEMP_FILE_PATH + file.getOriginalFilename());
+		if (convertFile.createNewFile()) {
+			try (FileOutputStream fos = new FileOutputStream(convertFile)) {
+				fos.write(file.getBytes());
+			}
+			return convertFile;
+		}
+		throw new IllegalArgumentException(String.format("파일 변환이 실패했습니다. 파일 이름: %s", file.getName()));
 	}
 }
