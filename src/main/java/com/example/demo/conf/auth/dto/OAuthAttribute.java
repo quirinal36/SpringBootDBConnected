@@ -1,16 +1,23 @@
 package com.example.demo.conf.auth.dto;
 
 import lombok.Getter;
+import lombok.ToString;
 import lombok.Builder;
 import java.util.Map;
 
-import com.example.demo.model.Role;
 import com.example.demo.model.UserVO;
+import com.example.demo.security.Role;
 
+@ToString
 @Getter
 public class OAuthAttribute {
     private Map<String, Object> attributes;
-    private String nameAttributeKey, name, email, picture;
+    private String nameAttributeKey;
+    private String name;
+    private String email;
+    private String picture;
+    private int picture_id;
+    
     @Builder
     public OAuthAttribute(Map<String, Object> attributes,
                            String nameAttributeKey,

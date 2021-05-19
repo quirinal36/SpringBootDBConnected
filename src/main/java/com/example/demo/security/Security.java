@@ -38,6 +38,7 @@ public class Security extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 			.antMatchers(HttpMethod.GET).permitAll()
 			.antMatchers(HttpMethod.POST).authenticated()
+			.antMatchers("/auth/**", "/oauth2/**").permitAll()
 			.and()
 			.httpBasic().disable()
 			.sessionManagement()
@@ -55,7 +56,7 @@ public class Security extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/v2/api-docs","/swagger-resources/**",
                 "/swagger-ui/*", "/api/v1/authenticate", 
-                "/api/v1/user/add", "/api/v1/get_access_token");
+                "/api/v1/member/add", "/api/v1/get_access_token");
 	}
 	@Bean
 	@Override

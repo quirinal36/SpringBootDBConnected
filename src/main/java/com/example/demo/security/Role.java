@@ -7,8 +7,8 @@ import lombok.Getter;
 @Getter
 public enum Role {
 	ADMIN("ROLE_ADMIN", "관리자권한"),
-    USER("ROLE_USER", "사용자권한"),
-    UNKNOWN("UNKNOWN", "알수없는 권한");
+    SELLER("ROLE_SELLER", "판매자권한"),
+    BUYER("ROLE_BUYER", "구매자권한");
 
     private String code;
     private String description;
@@ -22,6 +22,6 @@ public enum Role {
         return Arrays.stream(Role.values())
                 .filter(r -> r.getCode().equals(code))
                 .findAny()
-                .orElse(UNKNOWN);
+                .orElse(BUYER);
     }
 }

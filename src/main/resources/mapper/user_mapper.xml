@@ -10,11 +10,32 @@
 	
 	<insert id="insert" parameterType="UserVO" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO users 
-		(login, password) 
+		(login, password, name, email, picture_id, company_id, phone, fax, mobile) 
 		VALUES 
-		('${login}', hex(AES_ENCRYPT('${password}', SHA2('${enc_key}', 512))))
+		(
+			'${login}', 
+			hex(AES_ENCRYPT('${password}', SHA2('${enc_key}', 512))),
+			#{name, jdbcType=VARCHAR},
+			#{email, jdbcType=VARCHAR},
+			#{pictureId, jdbcType=INTEGER},
+			#{companyId, jdbcType=INTEGER},
+			#{phone, jdbcType=VARCHAR},
+			#{fax, jdbcType=VARCHAR},
+			#{mobile, jdbcType=VARCHAR}
+		)
 	</insert>
 	
+	<select id="selectUserById" resultType="UserVO" parameterType="UserVO">
+		SELECT 
+			u.*, 
+			r.role AS role_name
+		FROM 
+		users u 
+			LEFT JOIN roles r on (u.role = r.id)
+		<where>
+			u.id = '${id}'
+		</where>
+	</select>
 	<select id="selectUserByLogin" resultType="UserVO" parameterType="UserVO">
 		SELECT 
 			u.id,
@@ -47,9 +68,7 @@
 	
 	<select id="selectAll" resultType="UserVO">
 		SELECT
-			u.id,
-			u.login,
-			u.name,
+			u.*,
 			r.role AS role_name
 		FROM 
 		users u 
@@ -58,7 +77,27 @@
 	<update id="update" parameterType="UserVO">
 		UPDATE users
 		SET
-			name = '${name}'
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(name)">
+			name = '${name}',
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(email)">
+			email = '${email}',
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(picture)">
+			picture = '${picture}',
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(phone)">
+			phone = '${phone}',
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(fax)">
+			fax = '${fax}',
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(mobile)">
+			mobile = '${mobile}',
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(role)">
+			role = #{role}
+			</if>
 		where
 			id = ${id}
 	</update>
