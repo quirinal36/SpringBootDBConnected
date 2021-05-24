@@ -7,7 +7,6 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +32,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-@Slf4j
 @Component
 public class JwtUtil {
 	public static final String ROLES_KEY = "roles";
@@ -237,7 +235,6 @@ public class JwtUtil {
 			
 			return jwt;
 		} catch ( BadCredentialsException e) {
-			log.info("Bad Credential Exception");
 			throw new CommonException(e, EnumSecurityException.BadCredentialsException);
 		} catch (UsernameNotFoundException e) {
 			throw new UsernameNotFoundException(username);

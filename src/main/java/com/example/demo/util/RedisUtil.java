@@ -5,9 +5,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.filters.JwtRequestFilter;
-
-import jdk.internal.org.jline.utils.Log;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
