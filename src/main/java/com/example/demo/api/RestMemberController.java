@@ -47,8 +47,6 @@ public class RestMemberController {
 			@RequestParam(value="role", required=true, defaultValue="0", name="role")Optional<Integer> role) {
 		Result result = Result.successInstance();
 		
-		log.info("grant");
-		
 		UserVO user = new UserVO();
 		if(userId.isPresent()) {
 			user.setId(userId.get());
