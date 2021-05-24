@@ -22,6 +22,7 @@ import com.example.demo.exception.CommonException;
 import com.example.demo.service.SolamonUserDetailsService;
 import com.example.demo.util.HttpUtil;
 import com.example.demo.util.JwtUtil;
+import com.example.demo.util.RedisUtil;
 import com.example.demo.util.JwtUtil.TOKEN_TYPE;
 
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,8 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 	private SolamonUserDetailsService userDetailsService;
 	@Autowired
 	private JwtUtil jwtUtil;
-	
+	@Autowired
+	private RedisUtil redisUtil;
 	private static final Pattern BEARER = Pattern.compile("Bearer", Pattern.CASE_INSENSITIVE);
 	
 	@Value("${jwt.get.access.token.url}")
@@ -42,7 +44,6 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		log.info("doFilterInternal --------- start");
 		final String authorizationHeader = request.getHeader("Authorization");
 		
 		String username = null;
@@ -58,9 +59,12 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 				if(this.accessTokenUrl.equalsIgnoreCase(requestURI)) {
 					tokenType = TOKEN_TYPE.REFRESH_TOKEN;
 				}
-				
 				try {
 					username = jwtUtil.extractUsername(jwt, tokenType);
+					String redisRefreshToken = redisUtil.getData(username).trim();
+					if(!jwt.equals(redisRefreshToken)) {
+						response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+					}
 				} catch (CommonException e) {
 					log.info(e.getMessage());
 					response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
@@ -73,7 +77,7 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 			
 			// 토큰의 유효성을 확인
 			try {
-				if(this.jwtUtil.validateToken( jwt, userDetails, tokenType)) {
+				if(this.jwtUtil.validateToken(jwt, userDetails, tokenType)) {
 					UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 					token.setDetails(new WebAuthenticationDetailsSource().buildDetails( request));
 					// Security에 인증값 추가

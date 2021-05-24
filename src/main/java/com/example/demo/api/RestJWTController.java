@@ -1,9 +1,12 @@
 package com.example.demo.api;
 
+import java.net.http.HttpHeaders;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,6 +20,8 @@ import com.example.demo.model.JwtModel;
 import com.example.demo.model.Result;
 import com.example.demo.util.JwtUtil;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -66,10 +71,16 @@ public class RestJWTController {
 	 */
 	@ApiOperation(value="refresh token을 이용해 access token 과 refresh token 재발급", notes="jwt key 재발급")
 	@RequestMapping( value = "/get_access_token", method = RequestMethod.POST)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name="Authorization", value="auth", required=true, dataType="String", paramType="header")
+	})
+	@ApiResponses({
+		@ApiResponse(code=400, message="인증실패"),
+		@ApiResponse(code=401, message="인증실패"),
+	})
 	@ResponseBody
 	public Result get_access_token() throws Exception{
 		JwtModel token = this.jwtTokenUtil.makeReJwt();
-//		return ResponseEntity.ok(new AuthenticationResponse(token));
 		Result result = Result.successInstance();
 		result.setData(new AuthenticationResponse(token));
 		return result;

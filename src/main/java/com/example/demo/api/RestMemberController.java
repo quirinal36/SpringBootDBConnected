@@ -38,7 +38,8 @@ public class RestMemberController {
 	 */
 	@ApiImplicitParams({
 		@ApiImplicitParam(name="user_id", value="user id", required=true, dataType="int", defaultValue="0"),
-		@ApiImplicitParam(name="role", value="authorization role (1:ADMIN, 2:USER_SELLER, 3:USER_BUYER)", required=true, dataType="int", defaultValue="0")
+		@ApiImplicitParam(name="role", value="authorization role (1:ADMIN, 2:USER_SELLER, 3:USER_BUYER)", required=true, dataType="int", defaultValue="0"),
+		@ApiImplicitParam(name="Authorization", value="auth", required=true, dataType="String", paramType="header")
 	})
 	@ApiOperation(value="유저 권한변경", notes="관리자만 실행가능", response=Result.class)
 	@RolesAllowed("ROLE_ADMIN")
@@ -86,6 +87,7 @@ public class RestMemberController {
 		@ApiImplicitParam(name="phone", value="phone 수정", required=false, dataType="String"),
 		@ApiImplicitParam(name="fax", value="fax 수정", required=false, dataType="String"),
 		@ApiImplicitParam(name="mobile", value="mobile 수정", required=false, dataType="String"),
+		@ApiImplicitParam(name="Authorization", value="auth", required=true, dataType="String", paramType="header")
 	})
 	@ApiOperation(value="User 정보 수정하기", notes="name 값만 수정 가능")
 	@RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
@@ -236,6 +238,7 @@ public class RestMemberController {
 	}
 	@ApiImplicitParams({
 		@ApiImplicitParam(name="id", value="user id", required=true, dataType="int"),
+		@ApiImplicitParam(name="Authorization", value="auth", required=true, dataType="String", paramType="header"),
 	})
 	@ApiOperation(value="회원 정보 가져오기", notes="특정한 1명의 유저 정보를 보여준다.")
 	@PostMapping(value="/get/{id}")
