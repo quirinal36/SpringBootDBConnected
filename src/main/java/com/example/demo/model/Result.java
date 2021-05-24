@@ -21,6 +21,9 @@ public class Result {
     public static Result successInstance(){
         return new Result().success();
     }
+    public static Result failInstance(){
+        return new Result().fail();
+    }
 
     public Result success(){
         statusCode = HttpStatus.OK;

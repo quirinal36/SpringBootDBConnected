@@ -1,9 +1,6 @@
 package com.example.demo.conf;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -19,9 +16,6 @@ import java.util.List;
 public class SwaggerConfiguration {
 	public static final String AUTHORIZATION_HEADER = "Authorization";
 
-	@Autowired
-    private Environment environment;
-	
 	private ApiInfo apiInfo() {
 		return new ApiInfo("Spring REST API",
 				"Swagger UI",

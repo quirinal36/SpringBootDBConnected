@@ -3,7 +3,6 @@ package com.example.demo.api;
 import java.util.Optional;
 
 import javax.annotation.security.RolesAllowed;
-import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +16,6 @@ import com.example.demo.model.Result;
 import com.example.demo.model.UserVO;
 import com.example.demo.model.UserVO.UserVOBuilder;
 import com.example.demo.service.UserService;
-import com.example.demo.util.CommonUtil;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

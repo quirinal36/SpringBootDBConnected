@@ -15,13 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.example.demo.exception.CommonException;
 import com.example.demo.exception.EnumSecurityException;
@@ -30,11 +30,9 @@ import com.example.demo.service.SolamonUserDetailsService;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 
 @Slf4j
@@ -56,8 +54,6 @@ public class JwtUtil {
 	
 	@Autowired
 	private SolamonUserDetailsService userDetailsService;
-	
-	Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 	
 	public JwtUtil(@Value("${jwt.access.token.secure.key}")String ACCESS_KEY,
 			@Value("${jwt.refresh.token.secure.key}")String REFRESH_KEY,
@@ -113,29 +109,21 @@ public class JwtUtil {
 	 * @throws CommonException 
 	 */
 	private Claims extractAllClaims(String token, TokenTypeData ttd) throws CommonException {
-		
 		Claims body = null;
 		try {
-			
 			body = Jwts.parser()
-					.setSigningKey( ttd.getKey())
+					.setSigningKey(ttd.getKey())
 					.parseClaimsJws(token)
 					.getBody();
-			
 		} catch (ExpiredJwtException e) {
-			
 			throw new CommonException(e, EnumSecurityException.ExpiredJwtException);
 		} catch (UnsupportedJwtException e) {
-			
 			throw new CommonException(e, EnumSecurityException.UnsupportedJwtException);
 		} catch (MalformedJwtException e) {
-			
 			throw new CommonException(e, EnumSecurityException.MalformedJwtException);
 		} catch (SignatureException e) {
-			
 			throw new CommonException(e, EnumSecurityException.SignatureException);
 		} catch (IllegalArgumentException e) {
-
 			throw new CommonException(e, EnumSecurityException.IllegalArgumentException);
 		}
 		
@@ -194,12 +182,9 @@ public class JwtUtil {
 	 * @return
 	 */
 	private JwtModel generateToken( UserDetails userDetails) {
-		
 		Map<String, Object> claims = new HashMap<String, Object>();
 		String accessToken = this.createToken(claims, userDetails.getUsername(), TOKEN_TYPE.ACCESS_TOKEN);
-		log.info("acc: "+accessToken);
 		String refreshToken = this.createToken(claims, userDetails.getUsername(), TOKEN_TYPE.REFRESH_TOKEN);
-		log.info("ref: "+refreshToken);
 		redisUtil.setData(userDetails.getUsername(), refreshToken, REFRESH_EXPIRE_MINUTES);
 		return new JwtModel(accessToken, refreshToken);
 	}
@@ -243,7 +228,6 @@ public class JwtUtil {
 	 * @throws CommonException
 	 */
 	public JwtModel makeJwt( String username, String password) throws CommonException {
-		logger.info("username: " + username);
 		try {
 			this.authenticationManager
 					.authenticate( 
@@ -251,13 +235,17 @@ public class JwtUtil {
 								username, 
 								password));
 			final UserDetails user = userDetailsService.loadUserByUsername(username);
-			logger.info(user.toString());
+			
 			final JwtModel jwt = this.generateToken(user);
 			
 			return jwt;
 		} catch ( BadCredentialsException e) {
-			
+			log.info("Bad Credential Exception");
 			throw new CommonException(e, EnumSecurityException.BadCredentialsException);
+		} catch (UsernameNotFoundException e) {
+			throw new UsernameNotFoundException(username);
+		} catch( InternalAuthenticationServiceException e) {
+			throw new UsernameNotFoundException(username);
 		}
 		
 	}
@@ -293,7 +281,6 @@ public class JwtUtil {
 	 * @throws CommonException 
 	 */
 	public Boolean validateToken( String token, UserDetails userDetails, TOKEN_TYPE tokenType) throws CommonException {
-		
 		final String username = this.extractUsername(token, tokenType);
 		return ( username.equals( userDetails.getUsername()) && !isTokenExpired(token, tokenType));
 	}

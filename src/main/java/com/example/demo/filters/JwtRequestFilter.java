@@ -1,28 +1,17 @@
 package com.example.demo.filters;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.security.auth.message.AuthException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpUtils;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -35,8 +24,6 @@ import com.example.demo.util.HttpUtil;
 import com.example.demo.util.JwtUtil;
 import com.example.demo.util.JwtUtil.TOKEN_TYPE;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -55,6 +42,7 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
+		log.info("doFilterInternal --------- start");
 		final String authorizationHeader = request.getHeader("Authorization");
 		
 		String username = null;
@@ -74,7 +62,8 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 				try {
 					username = jwtUtil.extractUsername(jwt, tokenType);
 				} catch (CommonException e) {
-					e.printStackTrace();
+					log.info(e.getMessage());
+					response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 				}
 			}
 		}
@@ -91,7 +80,8 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 					SecurityContextHolder.getContext().setAuthentication(token);					
 				}
 			} catch (CommonException e) {
-				e.printStackTrace();
+				log.info(e.getMessage());
+				response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 			}
 		}
 		filterChain.doFilter(request, response);
