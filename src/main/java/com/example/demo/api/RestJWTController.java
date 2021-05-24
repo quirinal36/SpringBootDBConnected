@@ -1,12 +1,9 @@
 package com.example.demo.api;
 
-import java.net.http.HttpHeaders;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.control.AuthenticationRequest;
 import com.example.demo.control.AuthenticationResponse;
 import com.example.demo.exception.CommonException;
-import com.example.demo.exception.EnumSecurityException;
 import com.example.demo.model.JwtModel;
 import com.example.demo.model.Result;
 import com.example.demo.util.JwtUtil;
