@@ -61,9 +61,11 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 				}
 				try {
 					username = jwtUtil.extractUsername(jwt, tokenType);
-					String redisRefreshToken = redisUtil.getData(username).trim();
-					if(!jwt.equals(redisRefreshToken)) {
-						response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+					if(tokenType == TOKEN_TYPE.REFRESH_TOKEN) {
+						String redisRefreshToken = redisUtil.getData(username).trim();
+						if(!jwt.equals(redisRefreshToken)) {
+							response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+						}	
 					}
 				} catch (CommonException e) {
 					log.info(e.getMessage());
