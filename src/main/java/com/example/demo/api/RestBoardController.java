@@ -66,7 +66,7 @@ public class RestBoardController {
 		String originalFileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
 		String newFilename = newFilenameBase + originalFileExtension;
 		String srcPath = makeUserPath();
-		File newFile = new File(srcPath + File.separator + newFilename);
+		File newFile = new File(srcPath + newFilename);
 		
 		try {
 			file.transferTo(newFile);
@@ -158,7 +158,7 @@ public class RestBoardController {
 		File file = new File(getUserPath());
 		file.mkdirs();
 		
-		final String result = file.getAbsolutePath();
+		final String result = file.getAbsolutePath() + File.separator;
 		return result;
 	}
 	private String getUserPath() {
