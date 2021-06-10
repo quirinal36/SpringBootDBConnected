@@ -61,7 +61,6 @@ public class RestBoardController {
 		Result result = Result.successInstance();
 		
 		File convertedFile = convert(file);
-		JSONObject json = new JSONObject();
 		
 		String newFilenameBase = UUID.randomUUID().toString();
 		String originalFileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
@@ -144,6 +143,7 @@ public class RestBoardController {
 	}
 	private File convert(MultipartFile file) throws IOException {
 		File convertFile = new File(TEMP_FILE_PATH + file.getOriginalFilename());
+		log.info(convertFile.getAbsolutePath());
 		
 		if (convertFile.createNewFile()) {
 			try (FileOutputStream fos = new FileOutputStream(convertFile)) {
