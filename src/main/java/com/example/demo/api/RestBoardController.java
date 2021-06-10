@@ -82,17 +82,18 @@ public class RestBoardController {
 			}
 			builder.name(convertedFile.getName());
 			builder.newFilename(newFilename);
-			builder.size((int)convertedFile.length());
+			builder.size((int)file.getSize());
 			builder.contentType(file.getContentType());
 			
 			File thumbnailFile = resizeTo(newFile);
 			builder.thumbnailFilename(thumbnailFile.getName());
 			builder.thumbnailSize((int)thumbnailFile.length());
 			
-			PhotoInfo fileInfo = builder.build();
-			fileInfo.setUrl("/api/v1/file/"+fileInfo.getId());
-			service.insert(fileInfo);
-			result.setData(fileInfo);
+			PhotoInfo photoInfo = builder.build();
+			service.insert(photoInfo);
+			
+			photoInfo.setUrl("/api/v1/picture/"+photoInfo.getId());
+			result.setData(photoInfo);
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -143,7 +144,6 @@ public class RestBoardController {
 	}
 	private File convert(MultipartFile file) throws IOException {
 		File convertFile = new File(makeUserPath() + file.getOriginalFilename());
-		log.info(convertFile.getAbsolutePath());
 		
 		if (convertFile.createNewFile()) {
 			try (FileOutputStream fos = new FileOutputStream(convertFile)) {
@@ -163,7 +163,6 @@ public class RestBoardController {
 	}
 	private String getUserPath() {
 		String path = System.getProperty("user.dir");
-		log.info(path);
 		StringBuilder builder = new StringBuilder()
 				.append(path)
 				.append(File.separator).append("webapps").append(File.separator)
@@ -186,8 +185,6 @@ public class RestBoardController {
         PhotoInfo image = service.selectOne(param);
         try {
 	        File imageFile = new File(getUserPath()+File.separator+image.getNewFilename());
-	        log.info(imageFile.getAbsolutePath());
-	        log.info("file length: "+imageFile.length());
 	        response.setContentType(image.getContentType());
 	        response.setContentLength(image.getSize());
 	        
@@ -195,7 +192,6 @@ public class RestBoardController {
             
             IOUtils.copy(is, response.getOutputStream());
             imageByteArray = IOUtils.toByteArray(is);
-            log.info("image length: "+imageByteArray.length);
             is.close();
         } catch(IOException e) {
             log.info("Could not show picture "+id +"/" + e.getLocalizedMessage());

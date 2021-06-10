@@ -12,7 +12,9 @@
 			size,
 			contentType,
 			uploader,
-			type
+			type,
+			thumbnailFilename,
+			thumbnailSize
 		)
 		values
 		
@@ -23,7 +25,9 @@
 			${elem.size},
 			'${elem.contentType}',
 			${elem.uploader},
-			${elem.type}
+			${elem.type},
+			'${elem.thumbnailFilename}',
+			${elem.thumbnailSize}
 		</foreach>
 		
 	</insert>
@@ -37,7 +41,9 @@
 			size,
 			contentType,
 			uploader,
-			type
+			type,
+			thumbnailFilename,
+			thumbnailSize
 		)
 		values
 		
@@ -48,7 +54,9 @@
 			${size},
 			'${contentType}',
 			${uploader},
-			${type}
+			${type},
+			'${thumbnailFilename}',
+			${thumbnailSize}
 		)
 		
 	</insert>
