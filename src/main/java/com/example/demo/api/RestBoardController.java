@@ -44,7 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RestBoardController {
 	enum PhotoType {REGISTRATION};
 	
-	private final static String TEMP_FILE_PATH = "src/main/resources/";
+	private final static String TEMP_FILE_PATH = "temp/";
 	
 	@Autowired
 	private PhotoInfoService service;
@@ -142,7 +142,7 @@ public class RestBoardController {
 		return destFile;
 	}
 	private File convert(MultipartFile file) throws IOException {
-		File convertFile = new File(TEMP_FILE_PATH + file.getOriginalFilename());
+		File convertFile = new File(makeUserPath() + file.getOriginalFilename());
 		log.info(convertFile.getAbsolutePath());
 		
 		if (convertFile.createNewFile()) {
