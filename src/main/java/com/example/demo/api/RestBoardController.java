@@ -193,7 +193,7 @@ public class RestBoardController {
 	        response.setContentLength(image.getSize());
 	        
             InputStream is = new FileInputStream(imageFile);
-            log.info("is length: "+is.readAllBytes().length);
+            
             IOUtils.copy(is, response.getOutputStream());
             imageByteArray = IOUtils.toByteArray(is);
             log.info("image length: "+imageByteArray.length);
