@@ -2,7 +2,6 @@ package com.example.demo.model;
 
 import com.example.demo.conf.auth.dto.AuthProvider;
 import com.example.demo.security.Role;
-import com.fasterxml.jackson.annotation.JsonAlias;
 
 import lombok.Builder;
 import lombok.Getter;

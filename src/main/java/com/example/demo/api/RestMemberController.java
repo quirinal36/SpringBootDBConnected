@@ -198,7 +198,31 @@ public class RestMemberController {
 		}
 		return result;
 	}
-	
+
+	/**
+	 * email 정보를 활용해 로그인 정보 받아오기
+	 * 
+	 * @param email
+	 * @return
+	 */
+	@ApiImplicitParams({
+		@ApiImplicitParam(name="email", value="user email", required=true, dataType="String")
+	})
+	@ApiOperation(value="회원 아이디 찾기", notes="email 정보를 이용해 아이디를 검색한다.")
+	@GetMapping(value="/find/login")
+	public Result findLogin(@RequestParam(value="email", required=true)Optional<String> email) {
+		Result result = Result.successInstance();
+		UserVO user = UserVO.builder()
+				.email(email.get()).build();
+		UserVO selectedUserByEmail = service.selectUserByEmail(user.getEmail());
+		if(selectedUserByEmail != null) {
+			result.setData(selectedUserByEmail);
+		}else {
+			result.setData(-1);
+			result.setMessage("잘못된 이메일 주소를 입력하셨습니다.");
+		}
+		return result;
+	}
 	/**
 	 * 비밀번호 찾기 기능을 이용하기 위한 관문
 	 * 

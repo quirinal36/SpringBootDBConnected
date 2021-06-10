@@ -24,6 +24,10 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class Security extends WebSecurityConfigurerAdapter {
+	private static final String[] IGNORED_RESOURCE_LIST = new String[] {"/v2/api-docs","/swagger-resources/**",
+            "/swagger-ui/*", "/api/v1/authenticate", 
+            "/api/v1/member/add", "/api/v1/get_access_token",
+            "/resources/**", "/robots.txt", "/sitemap.xml"};
 	@Autowired
 	SolamonUserDetailsService userDetailService;
 	
@@ -54,9 +58,7 @@ public class Security extends WebSecurityConfigurerAdapter {
 	}
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/v2/api-docs","/swagger-resources/**",
-                "/swagger-ui/*", "/api/v1/authenticate", 
-                "/api/v1/member/add", "/api/v1/get_access_token");
+		web.ignoring().antMatchers(IGNORED_RESOURCE_LIST);
 	}
 	@Bean
 	@Override

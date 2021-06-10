@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.PhotoInfoMapper">
+	<insert id="insertList" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+		INSERT into PhotoInfo 
+		(
+			url,
+			name,
+			newFilename,
+			size,
+			contentType,
+			uploader,
+			type
+		)
+		values
+		
+		<foreach collection="list" item="elem" index="i" open="(" separator="),(" close=")">
+			'${elem.url}',
+			'${elem.name}',
+			'${elem.newFilename}',
+			${elem.size},
+			'${elem.contentType}',
+			${elem.uploader},
+			${elem.type}
+		</foreach>
+		
+	</insert>
+	
+	<insert id="insert" parameterType="PhotoInfo" useGeneratedKeys="true" keyProperty="id">
+		INSERT into PhotoInfo 
+		(
+			url,
+			name,
+			newFilename,
+			size,
+			contentType,
+			uploader,
+			type
+		)
+		values
+		
+		(
+			'${url}',
+			'${name}',
+			'${newFilename}',
+			${size},
+			'${contentType}',
+			${uploader},
+			${type}
+		)
+		
+	</insert>
+	
+	<select id = "selectOne" parameterType="PhotoInfo" resultType="PhotoInfo">
+		select *
+		from PhotoInfo
+		<where>
+			id = ${id}
+		</where>
+		
+	</select>
+	
+	<update id="update" parameterType="PhotoInfo">
+		UPDATE PhotoInfo
+		<set>
+			url = '${url}',
+		</set>
+		<where>
+			id=${id}
+		</where>
+	</update>
+	
+	<delete id="delete" parameterType="PhotoInfo">
+		DELETE FROM PhotoInfo
+		<where>
+			id=${id}
+		</where>
+	</delete>
+	
+	<select id="selectById" parameterType="java.util.List" resultType="PhotoInfo">
+		SELECT * FROM PhotoInfo
+		<where>
+			id IN
+			<foreach collection="list" item="item" open="(" separator="," close=")">
+				${item.id}
+			</foreach>
+		</where>
+	</select>
+</mapper>
