@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.CompanyMapper">
+	<select id="selectAll" resultType="CompanyVO">
+		SELECT * FROM company
+	</select>
+	
+	<select id="select" parameterType="CompanyVO" resultType="CompanyVO">
+		SELECT * FROM company
+		<where>
+			id = ${id}
+		</where>
+	</select>
+	<select id="selectByName" parameterType="CompanyVO" resultType="CompanyVO">
+		SELECT * FROM company
+		<where>
+			name like '%${name}%'
+		</where>
+	</select>
+	
+	<insert id="insert" parameterType="CompanyVO" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO company
+		(
+			name, reg_num, phone, mobile, fax, 
+			isCorporate, 
+			corporate_num, president_name, 
+			president_reg, address, postcode, address_detail, 
+			email, charger_name, charger_phone, charger_email, 
+			charger_fax, 
+			reg_photo, 
+			corporate_reg_photo
+		) 
+		VALUES (
+			#{name, jdbcType=VARCHAR}, 
+			#{reg_num, jdbcType=VARCHAR},
+			#{phone, jdbcType=VARCHAR}, 
+			#{mobile, jdbcType=VARCHAR}, 
+			#{fax, jdbcType=VARCHAR},
+			${isCorporate}, 
+			#{corporate_num, jdbcType=VARCHAR},
+			#{president_name, jdbcType=VARCHAR},
+			#{president_reg, jdbcType=VARCHAR},
+			#{address, jdbcType=VARCHAR},
+			#{postcode, jdbcType=VARCHAR},
+			#{address_detail, jdbcType=VARCHAR},
+			#{email, jdbcType=VARCHAR},
+			#{charger_name, jdbcType=VARCHAR},
+			#{charger_phone, jdbcType=VARCHAR},
+			#{charger_email, jdbcType=VARCHAR},
+			#{charger_fax, jdbcType=VARCHAR},
+			<choose>
+				<when test="reg_photo eq 0">
+					NULL,
+				</when>
+				<otherwise>
+					#{reg_photo, jdbcType=INTEGER},
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="corporate_reg_photo eq 0">
+					NULL
+				</when>
+				<otherwise>
+					#{corporate_reg_photo, jdbcType=INTEGER}
+				</otherwise>
+			</choose>
+		)	
+	</insert>
+	<update id="update" parameterType="CompanyVO">
+		UPDATE company
+		SET
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(name)">
+			name = '${name}'
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(reg_num)">
+			reg_num = '${reg_num}'
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(phone)">
+			phone = '${phone}'
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(mobile)">
+			mobile = '${mobile}'
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(fax)">
+			fax = '${fax}'
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(isCorporate)">
+			isCorporate = '${isCorporate}'
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(corporate_num)">
+			corporate_num = '${corporate_num}'
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(president_name)">
+			president_name = '${president_name}'
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(president_reg)">
+			president_reg = '${president_reg}'
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(address)">
+			address = '${address}'
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(postcode)">
+			postcode = '${postcode}'
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(address_detail)">
+			address_detail = '${address_detail}'
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(email)">
+			email = '${email}'
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(charger_name)">
+			charger_name = '${charger_name}'
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(charger_phone)">
+			charger_phone = '${charger_phone}'
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(charger_email)">
+			charger_email = '${charger_email}'
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(charger_fax)">
+			charger_fax = '${charger_fax}'
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(reg_photo)">
+			reg_photo = '${reg_photo}'
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(corporate_reg_photo)">
+			corporate_reg_photo = '${corporate_reg_photo}'
+			</if>
+		<where>
+			id = ${id}
+		</where>
+	</update>
+	<delete id="delete" parameterType="CompanyVO">
+		DELETE FROM company 
+		<where>
+			id = ${id}
+		</where>
+	</delete>
+</mapper>
+	

@@ -1,9 +1,11 @@
 package com.example.demo.api;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.security.RolesAllowed;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,7 +71,11 @@ public class RestMemberController {
 	@GetMapping(value="/info")
 	public Result memberInfo() {
 		Result result = Result.successInstance();
-		result.setData(service.selectAll());
+		
+		List<UserVO> list = service.selectAll();
+		result.setData(list);
+		result.setTotalCount(list.size());
+		
 		return result;
 	}
 	
@@ -87,7 +93,8 @@ public class RestMemberController {
 		@ApiImplicitParam(name="phone", value="phone 수정", required=false, dataType="String"),
 		@ApiImplicitParam(name="fax", value="fax 수정", required=false, dataType="String"),
 		@ApiImplicitParam(name="mobile", value="mobile 수정", required=false, dataType="String"),
-		@ApiImplicitParam(name="Authorization", value="auth", required=true, dataType="String", paramType="header")
+		@ApiImplicitParam(name="Authorization", value="auth", required=true, dataType="String", paramType="header"),
+		@ApiImplicitParam(name="role", value="사용자 유형(1:관리자, 2:판매자, 3:구매자[default])", required=true, dataType="int", defaultValue="3")
 	})
 	@ApiOperation(value="User 정보 수정하기", notes="name 값만 수정 가능")
 	@RolesAllowed({"ROLE_ADMIN", "ROLE_USER"})
@@ -98,7 +105,8 @@ public class RestMemberController {
 			@RequestParam(value="email", required=false, name="email")Optional<String> email,
 			@RequestParam(value="phone", required=false, name="phone")Optional<String> phone,
 			@RequestParam(value="fax", required=false, name="fax")Optional<String> fax,
-			@RequestParam(value="mobile", required=false, name="mobile")Optional<String> mobile) {
+			@RequestParam(value="mobile", required=false, name="mobile")Optional<String> mobile,
+			@RequestParam(name="role", required=true)Optional<Integer> role) {
 		UserVOBuilder user = UserVO.builder();
 		user.id(id.get());
 		if(password.isPresent()) {
@@ -118,6 +126,9 @@ public class RestMemberController {
 		}
 		if(mobile.isPresent()) {
 			user.mobile(mobile.get());
+		}
+		if(role.isPresent()) {
+			user.role(role.get());
 		}
 		
 		Result result = Result.successInstance();
@@ -141,7 +152,8 @@ public class RestMemberController {
 		@ApiImplicitParam(name="fax", value="user fax", required=false, dataType="String"),
 		@ApiImplicitParam(name="mobile", value="user mobile", required=false, dataType="String"),
 		@ApiImplicitParam(name="pictureId", value="user picture", required=false, dataType="int", defaultValue="0"),
-		@ApiImplicitParam(name="companyId", value="user company", required=false, dataType="int", defaultValue="0")
+		@ApiImplicitParam(name="companyId", value="user company", required=false, dataType="int", defaultValue="0"),
+		@ApiImplicitParam(name="role", value="사용자 유형(1:관리자, 2:판매자, 3:구매자[default])", required=true, dataType="int", defaultValue="3")
 	})
 	@ApiOperation(value="회원정보 추가", notes="user 정보를 입력")
 	@PostMapping(value="/add")
@@ -153,7 +165,8 @@ public class RestMemberController {
 			@RequestParam(name="fax", required=false)Optional<String>fax,
 			@RequestParam(name="mobile", required=false)Optional<String>mobile,
 			@RequestParam(name="pictureId", required=false)Optional<Integer> picture,
-			@RequestParam(name="companyId", required=false)Optional<Integer> company) {
+			@RequestParam(name="companyId", required=false)Optional<Integer> company,
+			@RequestParam(name="role", required=true)Optional<Integer> role) {
 		Result result = Result.successInstance();
 		UserVOBuilder user = UserVO.builder();
 		
@@ -166,17 +179,19 @@ public class RestMemberController {
 		if(mobile.isPresent()) user.mobile(mobile.get());
 		if(picture.isPresent()) {
 			user.pictureId(picture.get());
-		}else {
-			user.pictureId(1);
 		}
 		if(company.isPresent()) {
 			user.companyId(company.get());
-		}else {
-			user.companyId(1);
+		}
+		if(role.isPresent()) {
+			user.role(role.get());
 		}
 		
-		int insertResult = service.insert(user.build());
-		result.setData(insertResult);
+		UserVO insertUser = user.build();
+		int insertResult = service.insert(insertUser);
+		
+		result.setData(insertUser);
+		result.setTotalCount(insertResult);
 		return result;
 	}
 	@ApiImplicitParams({
@@ -271,6 +286,7 @@ public class RestMemberController {
 		UserVO user = UserVO.newInstanse(id);
 		UserVO selected = service.selectById(user);
 		if(selected != null && selected.getId()>0) {
+			selected.setPassword(null);
 			result.setData(selected);
 		}else {
 			result.setData(null);

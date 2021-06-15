@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,9 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.imgscalr.Scalr;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,24 +32,38 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.model.PhotoInfo;
 import com.example.demo.model.PhotoInfo.PhotoInfoBuilder;
+import com.example.demo.model.PhotoType;
 import com.example.demo.model.Result;
 import com.example.demo.service.PhotoInfoService;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequestMapping(value="/api/v1")
 @RestController
-public class RestBoardController {
-	enum PhotoType {REGISTRATION};
-	
-	private final static String TEMP_FILE_PATH = "temp/";
-	
+public class RestPhotoController {
 	@Autowired
 	private PhotoInfoService service;
+	
+	@GetMapping("/get/types")
+	public Result getAllTypes() {
+		Result result = Result.successInstance();
+		result.setData(PhotoType.getAll());
+		return result;
+	}
+	@GetMapping("/get/types/{type}")
+	public Result getType(@PathVariable(required=false) Optional<Integer> type) {
+		Result result = Result.successInstance();
+		if(type.isPresent()) {
+			PhotoType p = PhotoType.valueOf(type.get());
+			result.setData(p);
+		}
+		return result;
+	}
 	
 	@ApiImplicitParams({
 		@ApiImplicitParam(name="user", value="user id", required=true, dataType="int"),
@@ -78,7 +94,8 @@ public class RestBoardController {
 				builder.uploader(Integer.parseInt(user.get()));
 			}
 			if(type.isPresent()) {
-				builder.type(Integer.parseInt(type.get()));
+				PhotoType photoType = PhotoType.convertToType(type.get());
+				builder.type(photoType.getType());
 			}
 			builder.name(convertedFile.getName());
 			builder.newFilename(newFilename);
@@ -90,6 +107,7 @@ public class RestBoardController {
 			builder.thumbnailSize((int)thumbnailFile.length());
 			
 			PhotoInfo photoInfo = builder.build();
+			
 			service.insert(photoInfo);
 			
 			photoInfo.setUrl("/api/v1/picture/"+photoInfo.getId());
@@ -108,8 +126,8 @@ public class RestBoardController {
 		BufferedImage srcImg = ImageIO.read(input); 
 
 		// 썸네일의 너비와 높이 입니다.
-		final int dw = 400;
-		final int dh = 225;
+		final int dw = (int)(srcImg.getWidth() / 3);
+		final int dh = (int)(srcImg.getHeight() / 3);
 		
 		// 원본 이미지의 너비와 높이 입니다. 
 		final int ow = srcImg.getWidth(); 
@@ -172,8 +190,7 @@ public class RestBoardController {
 	}
 	
 	@GetMapping(
-			value = "/picture/{id}",
-			produces = MediaType.IMAGE_PNG_VALUE
+			value = "/picture/{id}"
 			)
     public @ResponseBody byte[] picture(HttpServletRequest request,
     		HttpServletResponse response, @PathVariable int id) {
@@ -185,6 +202,8 @@ public class RestBoardController {
         PhotoInfo image = service.selectOne(param);
         try {
 	        File imageFile = new File(getUserPath()+File.separator+image.getNewFilename());
+	        log.info(imageFile.getAbsolutePath());
+	        
 	        response.setContentType(image.getContentType());
 	        response.setContentLength(image.getSize());
 	        
@@ -202,21 +221,29 @@ public class RestBoardController {
         return imageByteArray;
     }
 	@RequestMapping(value = "/thumbnail/{id}", method = RequestMethod.GET)
-    public void thumbnail(HttpServletRequest request,
+    public @ResponseBody byte[] thumbnail(HttpServletRequest request,
     		HttpServletResponse response, @PathVariable int id) {
+		byte[] imageByteArray = null;
+		
 		PhotoInfo param = new PhotoInfo();
 		param.setId(id);
 		
 		PhotoInfo image = service.selectOne(param);
         File imageFile = new File(getUserPath()+File.separator+image.getThumbnailFilename());
+        log.info(imageFile.getAbsolutePath());
+        
         response.setContentType(image.getContentType());
         response.setContentLength(image.getThumbnailSize());
 		
         try {
             InputStream is = new FileInputStream(imageFile);
             IOUtils.copy(is, response.getOutputStream());
+            imageByteArray = IOUtils.toByteArray(is);
+            is.close();
         } catch(IOException e) {
             log.info("Could not show picture "+id +"/" + e.getLocalizedMessage());
         }
+        
+        return imageByteArray;
     }
 }

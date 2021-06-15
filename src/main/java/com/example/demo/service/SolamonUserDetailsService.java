@@ -32,7 +32,6 @@ public class SolamonUserDetailsService implements UserDetailsService{
 		param.setLogin(username);
 		param.setEnc_key(SECRET_KEY);
 		UserVO user = mapper.selectUserByLogin(param);
-		log.info("user>>"+user.toString());
 		GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole_name());
 		UserDetails userDetails = (UserDetails)new User(user.getLogin()
 				,new String("{noop}"+user.getPassword()), Arrays.asList(authority));

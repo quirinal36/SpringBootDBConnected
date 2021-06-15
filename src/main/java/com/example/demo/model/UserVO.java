@@ -1,5 +1,9 @@
 package com.example.demo.model;
 
+import java.sql.Date;
+
+import org.json.JSONObject;
+
 import com.example.demo.conf.auth.dto.AuthProvider;
 import com.example.demo.security.Role;
 
@@ -9,7 +13,6 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.NoArgsConstructor;
 
-@ToString
 @Getter
 @Setter
 @NoArgsConstructor
@@ -36,6 +39,8 @@ public class UserVO extends BaseTimeEntity{
 	
 	private AuthProvider provider;
 	private String providerId;
+	Date wdate;
+	Date udate;
 	
 //	public static final String AUTH = "Authorization";
 	
@@ -47,7 +52,7 @@ public class UserVO extends BaseTimeEntity{
 	
 	@Builder
 	public UserVO(int id, String name, String login, String email, String picture, Role roleType, String password,
-			String phone, String fax, String mobile, int pictureId, int companyId) {
+			String phone, String fax, String mobile, int pictureId, int companyId, int role) {
 		this.id = id;
 		this.name = name;
 		this.login = login;
@@ -60,6 +65,7 @@ public class UserVO extends BaseTimeEntity{
 		this.mobile = mobile;
 		this.pictureId = pictureId;
 		this.companyId = companyId;
+		this.role = role;
 		
 		if(roleType!=null) {
 			if(roleType.getCode().equalsIgnoreCase(Role.ADMIN.getCode())) {
@@ -77,5 +83,22 @@ public class UserVO extends BaseTimeEntity{
 		}else {
 			return "";
 		}
+	}
+	public JSONObject toJSONObject() {
+		JSONObject json = new JSONObject();
+		json.put("id", this.id);
+		json.put("role", this.role);
+		json.put("role_name", this.role_name);
+		json.put("roleType", this.roleType);
+		json.put("login", this.login);
+		json.put("email", this.email);
+		json.put("picture", this.picture);
+		json.put("name", this.name);
+		json.put("phone", this.phone);
+		json.put("fax", this.fax);
+		json.put("mobile", this.mobile);
+		json.put("pictureId", this.pictureId);
+		json.put("companyId", this.companyId);
+		return json;
 	}
 }

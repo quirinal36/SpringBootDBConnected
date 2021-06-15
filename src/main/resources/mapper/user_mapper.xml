@@ -10,18 +10,33 @@
 	
 	<insert id="insert" parameterType="UserVO" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO users 
-		(login, password, name, email, picture_id, company_id, phone, fax, mobile) 
+		(login, password, name, email, picture_id, company_id, phone, fax, mobile, role) 
 		VALUES 
 		(
 			'${login}', 
 			hex(AES_ENCRYPT('${password}', SHA2('${enc_key}', 512))),
 			#{name, jdbcType=VARCHAR},
 			#{email, jdbcType=VARCHAR},
-			#{pictureId, jdbcType=INTEGER},
-			#{companyId, jdbcType=INTEGER},
+			<choose>
+				<when test="pictureId eq 0">
+					NULL,
+				</when>
+				<otherwise>
+					#{pictureId, jdbcType=INTEGER},
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="companyId eq 0">
+					NULL,
+				</when>
+				<otherwise>
+					#{companyId, jdbcType=INTEGER},
+				</otherwise>
+			</choose>
 			#{phone, jdbcType=VARCHAR},
 			#{fax, jdbcType=VARCHAR},
-			#{mobile, jdbcType=VARCHAR}
+			#{mobile, jdbcType=VARCHAR},
+			#{role}
 		)
 	</insert>
 	

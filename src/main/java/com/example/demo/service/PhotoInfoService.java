@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service;
 import com.example.demo.mapper.PhotoInfoMapper;
 import com.example.demo.model.PhotoInfo;
 
+import jdk.internal.org.jline.utils.Log;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class PhotoInfoService implements WorkService<PhotoInfo> {
 	@Autowired
@@ -26,6 +30,7 @@ public class PhotoInfoService implements WorkService<PhotoInfo> {
 
 	@Override
 	public int insert(PhotoInfo input) {
+		log.info(input.toString());
 		return mapper.insert(input);
 	}
 
