@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.example.demo.mapper.PhotoInfoMapper;
 import com.example.demo.model.PhotoInfo;
 
-import jdk.internal.org.jline.utils.Log;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
