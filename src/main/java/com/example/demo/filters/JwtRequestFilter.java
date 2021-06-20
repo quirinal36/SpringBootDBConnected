@@ -76,7 +76,7 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 		}else {
 			log.info("authorizationHeader null");
 		}
-		log.info("username: username");
+		log.info("username: "+username);
 		log.info("SecurityContextHolder.getContext().getAuthentication():"+SecurityContextHolder.getContext().getAuthentication());
 		
 		if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
