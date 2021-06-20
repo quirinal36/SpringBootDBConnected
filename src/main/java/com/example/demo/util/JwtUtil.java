@@ -255,7 +255,12 @@ public class JwtUtil {
 	public JwtModel makeReJwt() throws CommonException {
 		try {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			
+			if(CommonUtil.empty(userDetailsService)) {
+				log.info("userDetailsService empty");
+			}
+			if(CommonUtil.empty(authentication)) {
+				log.info("authentication empty");
+			}
 			final UserDetails user = userDetailsService.loadUserByUsername(authentication.getName());
 			
 			final JwtModel jwt = this.generateToken(user);
