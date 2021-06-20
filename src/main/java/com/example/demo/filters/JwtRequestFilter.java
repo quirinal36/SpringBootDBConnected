@@ -63,6 +63,7 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 					username = jwtUtil.extractUsername(jwt, tokenType);
 					if(tokenType == TOKEN_TYPE.REFRESH_TOKEN) {
 						String redisRefreshToken = redisUtil.getData(username).trim();
+						log.info("redisRefreshToken: " + redisRefreshToken);
 						if(!jwt.equals(redisRefreshToken)) {
 							response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 						}	
@@ -72,23 +73,28 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 					response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 				}
 			}
+		}else {
+			log.info("authorizationHeader null");
 		}
 		if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 			// 사용자 아이디로 해당 정보가 있는지 확인함
 			UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-			
+			log.info(userDetails.toString());
 			// 토큰의 유효성을 확인
 			try {
 				if(this.jwtUtil.validateToken(jwt, userDetails, tokenType)) {
 					UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 					token.setDetails(new WebAuthenticationDetailsSource().buildDetails( request));
 					// Security에 인증값 추가
+					log.info("Security에 인증값 추가");
 					SecurityContextHolder.getContext().setAuthentication(token);					
 				}
 			} catch (CommonException e) {
 				log.info(e.getMessage());
 				response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 			}
+		}else {
+			log.info("username null");
 		}
 		filterChain.doFilter(request, response);
 	}
