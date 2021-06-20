@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.ProductMapper">
+	
+	<insert id="insert" parameterType="ProductVO" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO board 
+		(title, content, writer) 
+		VALUES 
+		('${title}', '${content}', ${writer})
+	</insert>
+	
+	<select id="selectAll" resultType="ProductVO">
+		SELECT
+			b.id,
+			u.id AS writer,
+			u.name AS writerName,
+			b.title,
+			b.content,
+			b.wdate
+		FROM 
+		board b 
+			LEFT JOIN users u on (b.writer = u.id)
+	</select>
+	<update id="update" parameterType="ProductVO">
+		UPDATE board
+		SET
+			content = '${content}'
+		where
+			id = ${id}
+	</update>
+</mapper>

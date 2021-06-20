@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.ApplicationMapper">
+	
+	<insert id="insert" parameterType="ApplicationVO" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO application 
+		(
+			writer_id, 
+			capacity, 
+			model, 
+			address
+		) 
+		VALUES 
+		(
+			#{writer_id, jdbcType=INTEGER}, 
+			#{capacity, jdbcType=VARCHAR}, 
+			#{model, jdbcType=VARCHAR}, 
+			#{address, jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<select id="selectAll" resultType="ApplicationVO">
+		SELECT
+			a.*, u.name AS username
+		FROM 
+		application a 
+			LEFT JOIN users u on (a.writer_id = u.id)
+	</select>
+	
+	<select id="selectById"  parameterType="ApplicationVO" resultType="ApplicationVO" >
+		SELECT
+			a.*, u.name AS username
+		FROM 
+		application a 
+			LEFT JOIN users u on (a.writer_id = u.id)
+		<where>
+			a.id = ${id}
+		</where>
+	</select>
+	
+	<update id="update" parameterType="ApplicationVO">
+		UPDATE application
+		SET
+		
+			capacity = #{capacity},
+		
+		<if test="@com.example.demo.util.CommonUtil@notEmpty(model)">
+			model = #{model},
+		</if>
+		<if test="@com.example.demo.util.CommonUtil@notEmpty(address)">
+			address = #{address}
+		</if>
+		where
+			id = ${id}
+	</update>
+	
+	<delete id="delete" parameterType="ApplicationVO">
+		UPDATE application
+		SET
+			removed=1
+		<where>
+			id = ${id}
+		</where>
+	</delete>
+	
+	<insert id="insertPhotos" parameterType="java.util.List">
+		INSERT into ApplicationPhotos
+		(
+			applicationId, 
+			photoId
+		)
+		VALUES
+		<foreach collection="list" item="elem" open="(" separator="),(" close=")">
+			#{elem.applicationId}, 
+			#{elem.photoId}
+		</foreach>
+	</insert>
+	
+	<delete id="deletePhotos" parameterType="java.util.List">
+		DELETE FROM ApplicationPhotos
+		<where>
+			id IN (
+				SELECT id FROM ApplicationPhotos
+				WHERE
+				 	applicationId IN
+					<foreach collection="list" item="elem" separator="," open="(" close=")">
+						${elem.applicationId}	
+					</foreach>
+					and 
+					photoId IN
+					<foreach collection="list" item="elem" separator="," open="(" close=")">
+						${elem.photoId}	
+					</foreach>
+			)
+		</where>
+	</delete>
+	
+	<select id="selectPhotos" parameterType="ApplicationVO" resultType="PhotoInfo">
+		SELECT p.*
+		FROM ApplicationPhotos a
+			LEFT JOIN PhotoInfo p on (a.photoId = p.id)
+		<where>
+			a.applicationId = ${id}
+		</where>
+		ORDER BY p.id
+	</select>
+</mapper>

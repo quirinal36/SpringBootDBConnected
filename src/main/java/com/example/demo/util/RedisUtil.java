@@ -18,11 +18,6 @@ public class RedisUtil {
 		return valueOperations.get(key);
 	}
 	
-	private void setData(String key, String value) {
-		ValueOperations<String, String>valueOperations = stringRedisTemplate.opsForValue();
-		valueOperations.set(key, value);
-	}
-	
 	public void setData(String key, String value, long duration) {
 		ValueOperations<String, String>valueOperations = stringRedisTemplate.opsForValue();
 		valueOperations.set(key, value, duration);

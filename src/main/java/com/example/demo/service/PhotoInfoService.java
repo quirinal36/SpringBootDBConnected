@@ -29,7 +29,6 @@ public class PhotoInfoService implements WorkService<PhotoInfo> {
 
 	@Override
 	public int insert(PhotoInfo input) {
-		log.info(input.toString());
 		return mapper.insert(input);
 	}
 
