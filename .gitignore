@@ -31,3 +31,5 @@ build/
 bin/**/*
 ### VS Code ###
 .vscode/
+
+**/repository/upload*
