@@ -76,6 +76,9 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 		}else {
 			log.info("authorizationHeader null");
 		}
+		log.info("username: username");
+		log.info("SecurityContextHolder.getContext().getAuthentication():"+SecurityContextHolder.getContext().getAuthentication());
+		
 		if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 			// 사용자 아이디로 해당 정보가 있는지 확인함
 			UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
