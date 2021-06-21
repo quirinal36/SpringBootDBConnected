@@ -205,11 +205,14 @@ public class RestMemberController {
 			user.setLogin(login.get());
 			UserVO selected = service.selectOne(user);
 			if(selected != null && selected.getId()>0) {
-				result.setData(selected.getId());
+				result.setData(selected);
+				result.setTotalCount(1);
 			}else {
-				result.setData(0);
+				result.setData(null);
+				result.setTotalCount(0);
 			}
 		}
+		
 		return result;
 	}
 
