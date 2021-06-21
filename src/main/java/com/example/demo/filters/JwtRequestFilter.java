@@ -56,9 +56,11 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 				jwt = authorizationHeader.substring(matcher.end() + 1);
 				
 				String requestURI = HttpUtil.getRequestURI(request);
+				log.info("requestURI : "+requestURI);
 				if(this.accessTokenUrl.equalsIgnoreCase(requestURI)) {
 					tokenType = TOKEN_TYPE.REFRESH_TOKEN;
 				}
+				
 				try {
 					username = jwtUtil.extractUsername(jwt, tokenType);
 					if(tokenType == TOKEN_TYPE.REFRESH_TOKEN) {
