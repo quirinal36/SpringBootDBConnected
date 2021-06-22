@@ -18,11 +18,14 @@ public class BoardVO extends Paging{
 	Date wdate;
 	Date udate;
 	String writerName;
+	String writerEmail;
 	
 	@Builder
-	public BoardVO(int id, String title, String content) {
+	public BoardVO(int id, String title, String content, String writerName, String writerEmail) {
 		this.id = id;
 		this.title = title;
 		this.content = content;
+		this.writerName = writerName;
+		this.writerEmail = writerEmail;
 	}	
 }

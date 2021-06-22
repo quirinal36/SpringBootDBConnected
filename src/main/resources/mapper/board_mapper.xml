@@ -6,18 +6,22 @@
 		INSERT INTO board 
 		(
 			title, 
-			content
+			content,
+			writerName,
+			writerEmail
 		) 
 		VALUES 
 		(
 			#{title, jdbcType=VARCHAR}, 
-			#{content, jdbcType=VARCHAR}
+			#{content, jdbcType=VARCHAR},
+			#{writerName, jdbcType=VARCHAR},
+			#{writerEmail, jdbcType=VARCHAR}
 		)
 	</insert>
 	
 	<select id="selectAll" resultType="BoardVO">
 		SELECT 
-			id, title, content
+			*
 		FROM board
 	</select>
 	<select id="select" resultType="BoardVO" parameterType="BoardVO">
@@ -25,6 +29,8 @@
 			id,
 			title,
 			content,
+			writerName,
+			writerEmail,
 			udate,
 			wdate
 		FROM 
@@ -45,7 +51,10 @@
 			id,
 			title,
 			content,
-			wdate
+			writerName,
+			writerEmail,
+			wdate,
+			udate
 		FROM 
 			board 
 		<where>
@@ -56,7 +65,15 @@
 	<update id="update" parameterType="BoardVO">
 		UPDATE board
 		SET
-			content = '${content}'
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(content)">
+				content = #{content},
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(writerName)">
+				writerName = #{writerName},
+			</if>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(writerEmail)">
+				writerEmail = #{writerEmail},
+			</if>
 		where
 			id = ${id}
 	</update>

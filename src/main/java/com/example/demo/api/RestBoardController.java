@@ -30,16 +30,25 @@ public class RestBoardController {
 	@ApiImplicitParams({
 		@ApiImplicitParam(name="title", value="제목", required=true, dataType = "String"),
 		@ApiImplicitParam(name="content", value="내용", required=true, dataType = "String"),
+		@ApiImplicitParam(name="writerName", value="작성자이름", required=true, dataType = "String"),
+		@ApiImplicitParam(name="writerEmail", value="작성자이메일", required=true, dataType = "String"),
 	})
 	@ApiOperation(value="글작성", notes="글작성", response=Result.class)
 	@GetMapping(value="add")
-	public Result add(Optional<String> title, Optional<String>content) {
+	public Result add(Optional<String> title, Optional<String>content,
+			Optional<String>writerName, Optional<String>writerEmail) {
 		BoardVOBuilder builder = BoardVO.builder();
 		if(title.isPresent()) {
 			builder.title(title.get());
 		}
 		if(content.isPresent()) {
 			builder.content(content.get());
+		}
+		if(writerName.isPresent()) {
+			builder.writerName(writerName.get());
+		}
+		if(writerEmail.isPresent()) {
+			builder.writerEmail(writerEmail.get());
 		}
 		BoardVO board = builder.build();
 		
