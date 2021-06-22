@@ -29,7 +29,7 @@ public class RestBoardController {
 	
 	@ApiImplicitParams({
 		@ApiImplicitParam(name="title", value="제목", required=true, dataType = "String"),
-		@ApiImplicitParam(name="boardContent", value="내용", required=true, dataType = "String"),
+		@ApiImplicitParam(name="content", value="내용", required=true, dataType = "String"),
 	})
 	@ApiOperation(value="글작성", notes="글작성", response=Result.class)
 	@GetMapping(value="add")
@@ -81,11 +81,7 @@ public class RestBoardController {
 				.id(id).build();
 		BoardVO selected = service.selectOne(vo);
 		result.setData(selected);
-		if(selected.getId() > 0) {
-			result.setTotalCount(1);
-		}else {
-			result.setTotalCount(0);
-		}
+		
 		return result;
 	}
 }
