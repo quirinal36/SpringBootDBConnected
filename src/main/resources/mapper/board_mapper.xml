@@ -4,23 +4,55 @@
 	
 	<insert id="insert" parameterType="BoardVO" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO board 
-		(title, content, writer) 
+		(
+			title, 
+			content
+		) 
 		VALUES 
-		('${title}', '${content}', ${writer})
+		(
+			#{title, jdbcType=VARCHAR}, 
+			#{content, jdbcType=VARCHAR}
+		)
 	</insert>
 	
 	<select id="selectAll" resultType="BoardVO">
-		SELECT
-			b.id,
-			u.id AS writer,
-			u.name AS writerName,
-			b.title,
-			b.content,
-			b.wdate
-		FROM 
-		board b 
-			LEFT JOIN users u on (b.writer = u.id)
+		SELECT 
+			id, title, content
+		FROM board
 	</select>
+	<select id="select" resultType="BoardVO" parameterType="BoardVO">
+		SELECT
+			id,
+			title,
+			content,
+			udate,
+			wdate
+		FROM 
+			board 
+		<where>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(query)">
+				title like '%${query}%'
+				or
+				content like '%${query}%'
+			</if>
+		</where>
+		order by id desc
+		LIMIT ${from}, ${pageSize}
+	</select>
+	
+	<select id="selectOne" resultType="BoardVO" parameterType="BoardVO">
+		SELECT
+			id,
+			title,
+			content,
+			wdate
+		FROM 
+			board 
+		<where>
+			id = #{id}
+		</where>
+	</select>
+	
 	<update id="update" parameterType="BoardVO">
 		UPDATE board
 		SET
@@ -28,4 +60,12 @@
 		where
 			id = ${id}
 	</update>
+	
+	<delete id="delete" parameterType="BoardVO">
+		DELETE BOARD
+		FROM
+		<where>
+			id = #{id}
+		</where>
+	</delete>
 </mapper>

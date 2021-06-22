@@ -15,14 +15,18 @@ public class BoardService implements WorkService<BoardVO> {
 	
 	@Override
 	public List<BoardVO> selectAll() {
-		// TODO Auto-generated method stub
 		return mapper.selectAll();
 	}
-
+	
+	public List<BoardVO> select(BoardVO input) {
+		int total = mapper.selectAll().size();
+		input.setTotalCount(total);
+		return mapper.select(input);
+	}
 	@Override
 	public BoardVO selectOne(BoardVO input) {
 		// TODO Auto-generated method stub
-		return null;
+		return mapper.selectOne(input);
 	}
 
 	@Override
@@ -36,5 +40,8 @@ public class BoardService implements WorkService<BoardVO> {
 		// TODO Auto-generated method stub
 		return mapper.update(input);
 	}
-
+	
+	public int delete(BoardVO input) {
+		return mapper.delete(input);
+	}
 }
