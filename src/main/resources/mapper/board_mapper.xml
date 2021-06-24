@@ -64,23 +64,25 @@
 	
 	<update id="update" parameterType="BoardVO">
 		UPDATE board
-		SET
-			<if test="@com.example.demo.util.CommonUtil@notEmpty(content)">
-				content = #{content},
-			</if>
-			<if test="@com.example.demo.util.CommonUtil@notEmpty(writerName)">
-				writerName = #{writerName},
-			</if>
-			<if test="@com.example.demo.util.CommonUtil@notEmpty(writerEmail)">
-				writerEmail = #{writerEmail},
-			</if>
-		where
+			<trim prefix="SET" suffixOverrides=",">
+				<if test="@com.example.demo.util.CommonUtil@notEmpty(content)">
+					content = #{content}
+				</if>
+				<if test="@com.example.demo.util.CommonUtil@notEmpty(writerName)">
+					writerName = #{writerName}
+				</if>
+				<if test="@com.example.demo.util.CommonUtil@notEmpty(writerEmail)">
+					writerEmail = #{writerEmail}
+				</if>
+			</trim>
+		<where>
 			id = ${id}
+		</where>
 	</update>
 	
 	<delete id="delete" parameterType="BoardVO">
-		DELETE BOARD
-		FROM
+		DELETE from board
+		
 		<where>
 			id = #{id}
 		</where>

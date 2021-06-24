@@ -93,4 +93,50 @@ public class RestBoardController {
 		
 		return result;
 	}
+	
+	@GetMapping(value="/delete/{id}")
+	public Result delete(@PathVariable(value="id", required=true)int id) {
+		Result result = Result.successInstance();
+		BoardVO vo = BoardVO.builder()
+				.id(id).build();
+		int deleted = service.delete(vo);
+		result.setData(deleted);
+		
+		return result;
+	}
+	
+	@ApiImplicitParams({
+		@ApiImplicitParam(name="id", value="아이디", required=true, dataType = "int"),
+		@ApiImplicitParam(name="title", value="제목", required=false, dataType = "String"),
+		@ApiImplicitParam(name="content", value="내용", required=false, dataType = "String"),
+		@ApiImplicitParam(name="writerName", value="작성자이름", required=false, dataType = "String"),
+		@ApiImplicitParam(name="writerEmail", value="작성자이메일", required=false, dataType = "String"),
+	})
+	@ApiOperation(value="글수정", notes="글수정", response=Result.class)
+	@GetMapping(value="update")
+	public Result update(int id,
+			Optional<String> title, Optional<String>content,
+			Optional<String>writerName, Optional<String>writerEmail) {
+		BoardVOBuilder builder = BoardVO.builder();
+		builder.id(id);
+		if(title.isPresent()) {
+			builder.title(title.get());
+		}
+		if(content.isPresent()) {
+			builder.content(content.get());
+		}
+		if(writerName.isPresent()) {
+			builder.writerName(writerName.get());
+		}
+		if(writerEmail.isPresent()) {
+			builder.writerEmail(writerEmail.get());
+		}
+		BoardVO board = builder.build();
+		
+		Result result = Result.successInstance();
+		int updated = service.update(board);
+		result.setData(board);
+		result.setTotalCount(updated);
+		return result;
+	}
 }
