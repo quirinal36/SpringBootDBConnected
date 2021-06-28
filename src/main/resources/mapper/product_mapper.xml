@@ -3,29 +3,99 @@
 <mapper namespace="com.example.demo.mapper.ProductMapper">
 	
 	<insert id="insert" parameterType="ProductVO" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO board 
-		(title, content, writer) 
+		INSERT INTO product 
+		(title, capacity, model, description,prdtCompany,
+		prdtDate,usingPeriod,count, certificationId, writer) 
 		VALUES 
-		('${title}', '${content}', ${writer})
+		(
+			#{title, jdbcType=VARCHAR}, 
+			#{capacity, jdbcType=INTEGER}, 
+			#{model, jdbcType=VARCHAR},
+			#{description, jdbcType=VARCHAR},
+			#{prdtCompany, jdbcType=VARCHAR},
+			#{prdtDate, jdbcType=VARCHAR},
+			#{usingPeriod, jdbcType=VARCHAR},
+			#{count, jdbcType=INTEGER},
+			#{certificationId, jdbcType=INTEGER},
+			#{writer, jdbcType=INTEGER}
+		)
 	</insert>
 	
 	<select id="selectAll" resultType="ProductVO">
 		SELECT
-			b.id,
+			p.*,
 			u.id AS writer,
-			u.name AS writerName,
-			b.title,
-			b.content,
-			b.wdate
+			u.name AS writerName
 		FROM 
-		board b 
-			LEFT JOIN users u on (b.writer = u.id)
+		product p 
+			LEFT JOIN users u on (p.writer = u.id)
 	</select>
+	
 	<update id="update" parameterType="ProductVO">
-		UPDATE board
+		UPDATE product
 		SET
-			content = '${content}'
+			title = #{title},
+			capacity = #{capacity},
+			model = #{model},
+			description = #{description},
+			prdtCompany = #{prdtCompany},
+			prdtDate = #{prdtDate},
+			usingPeriod = #{usingPeriod},
+			count = #{count},
+			certificationId = #{certificationId},
+			writer = #{writer},
 		where
 			id = ${id}
 	</update>
+	
+	<insert id="insertPhotos" parameterType="java.util.List">
+		INSERT into ProductPhotos
+		(
+			productId, 
+			photoId
+		)
+		VALUES
+		<foreach collection="list" item="elem" open="(" separator="),(" close=")">
+			#{elem.productId}, 
+			#{elem.photoId}
+		</foreach>
+	</insert>
+	
+	<select id="select" resultType="ProductVO" parameterType="ProductVO">
+		SELECT
+			p.*,
+			u.id AS writer,
+			u.name AS writerName
+		FROM 
+			product p 
+			LEFT JOIN users u on (p.writer = u.id)
+		<where>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(query)">
+				title like '%${query}%'
+				or
+				model like '%${query}%'
+			</if>
+		</where>
+		order by id desc
+		LIMIT ${from}, ${pageSize}
+	</select>
+	
+	<select id="selectOne" resultType="ProductVO" parameterType="ProductVO">
+		SELECT
+			p.*,
+			u.id AS writer,
+			u.name AS writerName
+		FROM 
+			product p 
+			LEFT JOIN users u on (p.writer = u.id)
+		<where>
+			p.id = #{id}
+		</where>
+	</select>
+	
+	<select id="totalCount" resultType="int">
+		SELECT count(*)
+		FROM
+		product
+	</select>
 </mapper>
