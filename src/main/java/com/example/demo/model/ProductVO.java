@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class ProductVO extends Paging{
 	Date udate;
 	int writer;
 	String writerName;
+	List<ProductPhoto> photos;
 	
 	@Builder
 	public ProductVO(int id, String title, int capacity,

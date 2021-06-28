@@ -34,7 +34,7 @@ public class RestProductController {
 	@ApiImplicitParams({
 		@ApiImplicitParam(name="title", value="제목", required=true, dataType="String"),
 		@ApiImplicitParam(name="capacity", value="용량", required=false, dataType="int"),
-		@ApiImplicitParam(name="model", value="모델명", required=false, dataType="String"),
+		@ApiImplicitParam(name="model", value="모델명", required=true, dataType="String"),
 		@ApiImplicitParam(name="description", value="상세설명", required=false, dataType="String"),
 		@ApiImplicitParam(name="prdtCompany", value="회사명", required=false, dataType="String"),
 		@ApiImplicitParam(name="prdtDate", value="제조연월", required=false, dataType="String"),
@@ -50,24 +50,40 @@ public class RestProductController {
 			@RequestHeader String Authorization,
 			@RequestParam(value="title", required=true) String title,
 			@RequestParam(value="capacity", required=false) Optional<Integer>capacity,
-			@RequestParam(value="model", required=false) String model,
+			@RequestParam(value="model", required=true) String model,
 			@RequestParam(value="description", required=false) String description,
 			@RequestParam(value="prdtCompany", required=false) String prdtCompany,
 			@RequestParam(value="prdtDate", required=false) String prdtDate,
 			@RequestParam(value="usingPeriod", required=false) String usingPeriod,
-			@RequestParam(value="count", required=false) int count,
+			@RequestParam(value="count", required=false) Optional<Integer> count,
 			@RequestParam int writer,
 			@RequestBody String[] pictures) {
 		Result result = Result.successInstance();
 		ProductVO vo = new ProductVO();
+		vo.setTitle(title);
+		if(count.isPresent()) {
+			vo.setCount(count.get());
+		}else {
+			vo.setCount(0);
+		}
+		if(capacity.isPresent()) {
+			vo.setCapacity(capacity.get());
+		}else {
+			vo.setCapacity(0);
+		}
+		vo.setWriter(writer);
+		vo.setModel(model);
 		
 		service.insert(vo);
+		
 		
 		List<ProductPhoto> photos = new ArrayList<ProductPhoto>();
 		for (String picture : pictures) {
 			photos.add(new ProductPhoto(vo.getId(), Integer.parseInt(picture)));
 		}
 		service.insertPhotos(photos);
+		vo.setPhotos(photos);
+		result.setData(vo);
 		return result;
 	}
 	
@@ -89,22 +105,58 @@ public class RestProductController {
 	public Result update(
 			@RequestParam(value="id")int id,
 			@RequestHeader String Authorization,
-			@RequestParam(value="certificationId", required=false) int certificationId,
-			@RequestParam(value="title", required=false) String title,
-			@RequestParam(value="capacity", required=false) int capacity,
-			@RequestParam(value="model", required=false) String model,
-			@RequestParam(value="description", required=false) String description,
-			@RequestParam(value="prdtCompany", required=false) String prdtCompany,
-			@RequestParam(value="prdtDate", required=false) String prdtDate,
-			@RequestParam(value="usingPeriod", required=false) String usingPeriod,
-			@RequestParam(value="count", required=false) int count,
+			@RequestParam(value="certificationId", required=false) Optional<Integer>certificationId,
+			@RequestParam(value="title", required=false) Optional<String> title,
+			@RequestParam(value="capacity", required=false) Optional<Integer> capacity,
+			@RequestParam(value="model", required=false) Optional<String> model,
+			@RequestParam(value="description", required=false) Optional<String> description,
+			@RequestParam(value="prdtCompany", required=false) Optional<String> prdtCompany,
+			@RequestParam(value="prdtDate", required=false) Optional<String> prdtDate,
+			@RequestParam(value="usingPeriod", required=false) Optional<String> usingPeriod,
+			@RequestParam(value="count", required=false) Optional<Integer> count,
 			@RequestParam(value="writer")Optional<Integer>writer) {
 		Result result = Result.successInstance();
 		ProductVO vo = new ProductVO();
 		vo.setId(id);
 		ProductVO selected = service.selectOne(vo);
-		
-		service.update(selected);
+		if(certificationId.isPresent()) {
+			selected.setCertificationId(certificationId.get());
+		}
+		if(title.isPresent()) {
+			selected.setTitle(title.get());
+		}
+		if(capacity.isPresent()) {
+			selected.setCapacity(capacity.get());
+		}else {
+			selected.setCapacity(0);
+		}
+		if(model.isPresent()) {
+			selected.setModel(model.get());
+		}
+		if(description.isPresent()) {
+			selected.setDescription(description.get());
+		}
+		if(prdtCompany.isPresent()) {
+			selected.setPrdtCompany(prdtCompany.get());
+		}
+		if(prdtDate.isPresent()) {
+			selected.setPrdtDate(prdtDate.get());
+		}
+		if(usingPeriod.isPresent()) {
+			selected.setUsingPeriod(usingPeriod.get());
+		}
+		if(count.isPresent()) {
+			selected.setCount(count.get());
+		}else {
+			selected.setCount(0);
+		}
+		if(writer.isPresent()) {
+			selected.setWriter(writer.get());
+		}
+		if(service.update(selected) > 0) {
+			result.setData(selected);
+			result.setTotalCount(1);
+		}
 		return result;
 	}
 	

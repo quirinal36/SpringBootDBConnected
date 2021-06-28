@@ -5,7 +5,7 @@
 	<insert id="insert" parameterType="ProductVO" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO product 
 		(title, capacity, model, description,prdtCompany,
-		prdtDate,usingPeriod,count, certificationId, writer) 
+		prdtDate,usingPeriod,count, writer) 
 		VALUES 
 		(
 			#{title, jdbcType=VARCHAR}, 
@@ -16,7 +16,6 @@
 			#{prdtDate, jdbcType=VARCHAR},
 			#{usingPeriod, jdbcType=VARCHAR},
 			#{count, jdbcType=INTEGER},
-			#{certificationId, jdbcType=INTEGER},
 			#{writer, jdbcType=INTEGER}
 		)
 	</insert>
@@ -42,8 +41,12 @@
 			prdtDate = #{prdtDate},
 			usingPeriod = #{usingPeriod},
 			count = #{count},
-			certificationId = #{certificationId},
-			writer = #{writer},
+			<trim prefix="SET" suffixOverrides=",">
+				<if test="certificationId > 0">
+					certificationId = #{certificationId}
+				</if>
+			</trim>
+			writer = #{writer}
 		where
 			id = ${id}
 	</update>
