@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.BoardVO;
 import com.example.demo.model.BoardVO.BoardVOBuilder;
+import com.example.demo.model.PagingResult;
 import com.example.demo.model.Result;
 import com.example.demo.service.BoardService;
 
@@ -65,7 +66,7 @@ public class RestBoardController {
 	})
 	@ApiOperation(value="게시판 글 가져오기", notes="1 페이지당 10개 가져온다.", response=Result.class)
 	@GetMapping(value="list/{pageNo}")
-	public Result selectAll(@RequestParam(value="query", required=false)Optional<String> query,
+	public PagingResult selectAll(@RequestParam(value="query", required=false)Optional<String> query,
 			@PathVariable(value="pageNo", required=false)Optional<Integer> pageNo) {
 		BoardVOBuilder builder = BoardVO.builder();
 		BoardVO vo = builder.build();
@@ -76,10 +77,10 @@ public class RestBoardController {
 			vo.setQuery(query.get());
 		}	
 		
-		Result result = Result.successInstance();
+		PagingResult result = PagingResult.successInstance();
 		List<BoardVO> list = service.select(vo);
+		result.setTotalCount(service.selectAll().size());
 		result.setData(list);
-		result.setTotalCount(list.size());
 		return result;
 	}
 	
