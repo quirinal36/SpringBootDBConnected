@@ -41,12 +41,10 @@
 			prdtDate = #{prdtDate},
 			usingPeriod = #{usingPeriod},
 			count = #{count},
-			<trim prefix="SET" suffixOverrides=",">
-				<if test="certificationId > 0">
-					certificationId = #{certificationId}
-				</if>
-			</trim>
-			writer = #{writer}
+			writer = #{writer},
+			<if test="certificationId > 0">
+				certificationId = #{certificationId}
+			</if>
 		where
 			id = ${id}
 	</update>

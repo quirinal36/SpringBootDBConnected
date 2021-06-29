@@ -65,18 +65,21 @@
 	<update id="update" parameterType="BoardVO">
 		UPDATE board
 			<trim prefix="SET" suffixOverrides=",">
+				<if test="@com.example.demo.util.CommonUtil@notEmpty(title)">
+					title = #{title},
+				</if>
 				<if test="@com.example.demo.util.CommonUtil@notEmpty(content)">
-					content = #{content}
+					content = #{content},
 				</if>
 				<if test="@com.example.demo.util.CommonUtil@notEmpty(writerName)">
-					writerName = #{writerName}
+					writerName = #{writerName},
 				</if>
 				<if test="@com.example.demo.util.CommonUtil@notEmpty(writerEmail)">
 					writerEmail = #{writerEmail}
 				</if>
 			</trim>
 		<where>
-			id = ${id}
+			id = #{id}
 		</where>
 	</update>
 	
