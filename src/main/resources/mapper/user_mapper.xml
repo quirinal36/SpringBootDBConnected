@@ -13,8 +13,8 @@
 		(login, password, name, email, picture_id, company_id, phone, fax, mobile, role) 
 		VALUES 
 		(
-			'${login}', 
-			hex(AES_ENCRYPT('${password}', SHA2('${enc_key}', 512))),
+			#{login}, 
+			hex(AES_ENCRYPT(#{password}, SHA2(#{enc_key}, 512))),
 			#{name, jdbcType=VARCHAR},
 			#{email, jdbcType=VARCHAR},
 			<choose>
@@ -57,7 +57,12 @@
 			u.login, 
 			AES_DECRYPT(unhex(u.password), SHA2('${enc_key}', 512)) AS password, 
 			u.role, 
-			r.role AS role_name
+			r.role AS role_name,
+			u.email,
+			u.name,
+			u.phone,
+			u.mobile,
+			u.fax
 		FROM 
 		users u 
 			LEFT JOIN roles r on (u.role = r.id)

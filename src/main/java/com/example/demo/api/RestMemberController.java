@@ -187,10 +187,15 @@ public class RestMemberController {
 		}
 		
 		UserVO insertUser = user.build();
-		int insertResult = service.insert(insertUser);
-		
-		result.setData(insertUser);
-		result.setTotalCount(insertResult);
+		try {
+			int insertResult = service.insert(insertUser);
+			
+			result.setData(insertUser);
+			result.setTotalCount(insertResult);
+		}catch(Exception e) {
+			result = Result.failInstance();
+			result.setData(e.getMessage());
+		}
 		return result;
 	}
 	@ApiImplicitParams({
