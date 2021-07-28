@@ -6,10 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.mapper.ProductMapper;
+import com.example.demo.model.PhotoInfo;
 import com.example.demo.model.ProductPhoto;
 import com.example.demo.model.ProductVO;
 
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class ProductService {
 	@Autowired
@@ -28,7 +31,9 @@ public class ProductService {
 	}
 
 	public List<ProductVO> select(ProductVO input) {
-		input.setTotalCount(totalCount().size());
+		int total = totalCount().size();
+		input.setTotalCount(total);
+		log.info(input.toString());
 		return mapper.select(input);
 	}
 
@@ -46,5 +51,12 @@ public class ProductService {
 	public int insertPhotos(List<ProductPhoto> list) {
 		if(list.size() == 0)return -1;
 		return mapper.insertPhotos(list);
+	}
+	public int deletePhotos(List<ProductPhoto> list) {
+		if(list.size() == 0)return -1;
+		return mapper.deletePhotos(list);
+	}
+	public List<PhotoInfo> selectPhotos(ProductVO input){
+		return mapper.selectPhotos(input);
 	}
 }

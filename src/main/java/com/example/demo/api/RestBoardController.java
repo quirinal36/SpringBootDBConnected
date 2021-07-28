@@ -75,7 +75,8 @@ public class RestBoardController {
 		}
 		if(query.isPresent()) {
 			vo.setQuery(query.get());
-		}	
+			vo.setPageNo(1);
+		}
 		
 		PagingResult result = PagingResult.successInstance();
 		List<BoardVO> list = service.select(vo);

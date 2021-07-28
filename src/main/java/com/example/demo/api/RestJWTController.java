@@ -56,7 +56,7 @@ public class RestJWTController {
 	@ResponseBody
 	public Result createAuthenticationToken(
 			@RequestBody AuthenticationRequest authenticationRequest) {
-		log.info(authenticationRequest.getUsername());
+		log.info("username==>>"+authenticationRequest.getUsername());
 		
 		try {
 			JwtModel token = jwtTokenUtil.makeJwt(authenticationRequest.getUsername(), authenticationRequest.getPassword());

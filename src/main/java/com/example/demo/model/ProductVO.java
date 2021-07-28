@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@NoArgsConstructor
+@ToString
 @Getter
 @Setter
-@ToString
-@NoArgsConstructor
 public class ProductVO extends Paging{
 	int id;
 	String title;			// 제품명
@@ -24,11 +24,11 @@ public class ProductVO extends Paging{
 	String usingPeriod;		// 사용기간
 	int count;				// 수량
 	int certificationId;	// 인증서 아이디
-	Date wdate;
-	Date udate;
 	int writer;
 	String writerName;
 	List<ProductPhoto> photos;
+	Date wdate;
+	Date udate;
 	
 	@Builder
 	public ProductVO(int id, String title, int capacity,

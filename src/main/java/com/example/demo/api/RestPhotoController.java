@@ -43,7 +43,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RequestMapping(value="/api/v1")
+@RequestMapping(value="/api/v1/photo")
 @RestController
 public class RestPhotoController {
 	@Autowired
@@ -65,6 +65,23 @@ public class RestPhotoController {
 		return result;
 	}
 	
+	@ApiImplicitParam(name="pageNo", value="페이지번호", required=false, dataType = "int")
+	@ApiOperation(value="사진리스트", notes="사진리스트", response=Result.class)
+	@GetMapping("/list/{pageNo}")
+	public Result select(@PathVariable(value="pageNo", required=false)Optional<Integer> pageNo) {
+		Result result = Result.successInstance();
+		PhotoInfo photoInfo = new PhotoInfo();
+		if(pageNo.isPresent()) {
+			photoInfo.setPageNo(pageNo.get());
+		}else {
+			photoInfo.setPageNo(1);
+		}
+		log.info(photoInfo.toString());
+		photoInfo.setTotalCount(service.countAll());
+		List<PhotoInfo> list = service.select(photoInfo);
+		result.setData(list);
+		return result;
+	}
 	@ApiImplicitParams({
 		@ApiImplicitParam(name="user", value="user id", required=true, dataType="int"),
 		@ApiImplicitParam(name="type", value="photo type", required=true, dataType="int")

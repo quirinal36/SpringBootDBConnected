@@ -32,7 +32,7 @@
 	
 	<update id="update" parameterType="ProductVO">
 		UPDATE product
-		SET
+		<trim prefix="SET" suffixOverrides=",">
 			title = #{title},
 			capacity = #{capacity},
 			model = #{model},
@@ -43,10 +43,12 @@
 			count = #{count},
 			writer = #{writer},
 			<if test="certificationId > 0">
-				certificationId = #{certificationId}
+				certificationId = #{certificationId},
 			</if>
-		where
-			id = ${id}
+		</trim>
+		<where>
+		id = ${id}
+		</where>
 	</update>
 	
 	<insert id="insertPhotos" parameterType="java.util.List">
@@ -94,9 +96,46 @@
 		</where>
 	</select>
 	
-	<select id="totalCount" resultType="int">
-		SELECT count(*)
+	<select id="totalCount" resultType="ProductVO">
+		SELECT id
 		FROM
 		product
 	</select>
+	
+	<delete id="deletePhotos" parameterType="java.util.List">
+		DELETE FROM ProductPhotos
+		<where>
+			id IN (
+				SELECT id FROM ProductPhotos
+				WHERE
+				 	productId IN
+					<foreach collection="list" item="elem" separator="," open="(" close=")">
+						${elem.productId}	
+					</foreach>
+					and 
+					photoId IN
+					<foreach collection="list" item="elem" separator="," open="(" close=")">
+						${elem.photoId}	
+					</foreach>
+			)
+		</where>
+	</delete>
+	
+	<select id="selectPhotos" parameterType="ProductVO" resultType="PhotoInfo">
+		SELECT p.*
+		FROM ProductPhotos a
+			LEFT JOIN PhotoInfo p on (a.photoId = p.id)
+		<where>
+			a.productId = ${id}
+		</where>
+		ORDER BY p.id
+	</select>
+	
+	<delete id="delete" parameterType="ProductVO">
+	DELETE FROM product
+	<where>
+		id = #{id}
+	</where>
+	</delete>
+	
 </mapper>

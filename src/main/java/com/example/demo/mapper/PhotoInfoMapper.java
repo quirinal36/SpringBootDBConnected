@@ -15,4 +15,6 @@ public interface PhotoInfoMapper {
 	public int update(PhotoInfo input);
 	public int delete(PhotoInfo input);
 	public List<PhotoInfo> selectById(List<PhotoInfo> list);
+	public List<PhotoInfo> select(PhotoInfo list);
+	public int countAll();
 }

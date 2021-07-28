@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.example.demo.model.PhotoInfo;
 import com.example.demo.model.ProductPhoto;
 import com.example.demo.model.ProductVO;
 
@@ -18,4 +19,6 @@ public interface ProductMapper {
 	public int delete(ProductVO input);
 	public List<ProductVO> totalCount();
 	public int insertPhotos(List<ProductPhoto> list);
+	public int deletePhotos(List<ProductPhoto>list);
+	public List<PhotoInfo> selectPhotos(ProductVO input);
 }

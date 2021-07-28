@@ -1,6 +1,7 @@
 package com.example.demo.api;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.model.PagingResult;
+import com.example.demo.model.PhotoInfo;
 import com.example.demo.model.ProductPhoto;
 import com.example.demo.model.ProductVO;
 import com.example.demo.model.Result;
@@ -76,7 +79,6 @@ public class RestProductController {
 		
 		service.insert(vo);
 		
-		
 		List<ProductPhoto> photos = new ArrayList<ProductPhoto>();
 		for (String picture : pictures) {
 			photos.add(new ProductPhoto(vo.getId(), Integer.parseInt(picture)));
@@ -101,6 +103,7 @@ public class RestProductController {
 		@ApiImplicitParam(name="certificationId", value="인증서 아이디", required=false, dataType="int"),
 		@ApiImplicitParam(name="Authorization", value="auth", required=true, dataType="String", paramType="header"),
 	})
+	@ApiOperation(value="상품수정", notes="상품수정", response = Result.class)
 	@PostMapping(value="update")
 	public Result update(
 			@RequestParam(value="id")int id,
@@ -114,7 +117,8 @@ public class RestProductController {
 			@RequestParam(value="prdtDate", required=false) Optional<String> prdtDate,
 			@RequestParam(value="usingPeriod", required=false) Optional<String> usingPeriod,
 			@RequestParam(value="count", required=false) Optional<Integer> count,
-			@RequestParam(value="writer")Optional<Integer>writer) {
+			@RequestParam(value="writer")Optional<Integer>writer,
+			@RequestBody String[] pictures) {
 		Result result = Result.successInstance();
 		ProductVO vo = new ProductVO();
 		vo.setId(id);
@@ -156,6 +160,7 @@ public class RestProductController {
 		if(service.update(selected) > 0) {
 			result.setData(selected);
 			result.setTotalCount(1);
+			updatePhotoList(vo, pictures);
 		}
 		return result;
 	}
@@ -166,21 +171,30 @@ public class RestProductController {
 	})
 	@ApiOperation(value="상품 리스트", notes="1 페이지당 10개 상품을 리스트한다.", response=Result.class)
 	@GetMapping(value="list/{pageNo}")
-	public Result select(@RequestParam(value="query", required=false)Optional<String> query,
+	public PagingResult select(@RequestParam(value="query", required=false)Optional<String> query,
 			@PathVariable(value="pageNo", required=false)Optional<Integer> pageNo){
+		
 		ProductVO vo = new ProductVO();
-		vo.setPageNo(pageNo.get());
+		if(pageNo.isPresent()) {
+			vo.setPageNo(pageNo.get());
+			log.info("vo pageNo: " + vo.getPageNo());
+		}else {
+			vo.setPageNo(1);
+		}
 		if(query.isPresent()) {
 			vo.setQuery(query.get());
 		}
-		
-		Result result = Result.successInstance();
+		log.info("vo pageNo2:" + vo.getPageNo());
+		PagingResult result = PagingResult.successInstance();
 		List<ProductVO> list = service.select(vo);
+		result.setPageNo(vo.getPageNo());
+		result.setTotalCount(service.totalCount().size());
 		result.setData(list);
-		result.setTotalCount(list.size());
 		return result;
 	}
 	
+	@ApiImplicitParam(name="id", value="id", required=true, dataType="int")
+	@ApiOperation(value="상품 상세화면", notes="상품 상세화면", response=Result.class)
 	@GetMapping(value="/detail/{id}")
 	public Result selectOne(@PathVariable(value="id", required=true)int id) {
 		Result result = Result.successInstance();
@@ -197,17 +211,83 @@ public class RestProductController {
 	@ApiImplicitParams({
 		@ApiImplicitParam(name="id", value="id", required=true, dataType="int"),
 		@ApiImplicitParam(name="Authorization", value="auth", required=true, dataType="String", paramType="header"),
-	})	
+	})
+	@ApiOperation(value="상품 삭제하기", notes="상품 삭제하기", response=Result.class)
 	@PostMapping(value="/delete/{id}")
 	public Result delete(@PathVariable(value="id", required=true)int id,
 			@RequestHeader String Authorization) {
 		Result result = Result.successInstance();
 		ProductVO vo = new ProductVO();
 		vo.setId(id);
-		
+		List<PhotoInfo> selctedPhotos = service.selectPhotos(vo);
+		List<ProductPhoto> list = new ArrayList<ProductPhoto>();
+		for(PhotoInfo info: selctedPhotos) {
+			list.add(new ProductPhoto(vo.getId(), info.getId()));
+		}
+		service.deletePhotos(list);
 		int deleted = service.delete(vo);
 		result.setData(deleted);
 		
 		return result;
+	}
+	private void updatePhotoList(ProductVO vo, String[] pictures) {
+		List<Integer> pList = new ArrayList<Integer>();
+		for(String picture : pictures) {
+			pList.add(Integer.parseInt(picture));
+		}
+		pList.sort(null);
+		
+		List<ProductPhoto> newerPhotos = new ArrayList<ProductPhoto>();
+		List<ProductPhoto> olderPhotos = new ArrayList<ProductPhoto>();
+		
+		List<PhotoInfo> photos = service.selectPhotos(vo);
+		if(pList.size() == 0) {	
+			// 새로 들어온 파일이 하나도 없을 경우
+			for(PhotoInfo p:photos) {
+				olderPhotos.add(new ProductPhoto(vo.getId(), p.getId()));
+			}
+		}else if(photos.size()==0 && pList.size()>0) {
+			// 원래 있던 사진이 하나도 없고, 새로운 파일이 등록된경우
+			Iterator<Integer> iter = pList.iterator();
+			while(iter.hasNext()) {
+				newerPhotos.add(new ProductPhoto(vo.getId(), iter.next()));
+			}
+		}else {
+			Iterator<Integer> iter = pList.iterator();
+			
+			while(iter.hasNext()) {
+				int newPhotoId = iter.next();
+				boolean isExist = false;
+				for(PhotoInfo p: photos) {
+					if(p.getId() == newPhotoId) {
+						isExist = true;
+						break;
+					}
+				}
+				if(!isExist) {
+					newerPhotos.add(new ProductPhoto(vo.getId(), newPhotoId));
+				}
+			}
+			
+			for(PhotoInfo p: photos) {
+				int dbPhoto = p.getId();
+				boolean isDeleted = true;
+				for(Integer newPhotoId : pList) {
+					if(newPhotoId == dbPhoto) {
+						isDeleted = false;
+						break;
+					}
+				}
+				if(isDeleted) {
+					olderPhotos.add(new ProductPhoto(vo.getId(), dbPhoto));
+				}
+			}
+		}
+		if(newerPhotos.size()>0) {
+			service.insertPhotos(newerPhotos);
+		}
+		if(olderPhotos.size() > 0) {
+			service.deletePhotos(olderPhotos);
+		}
 	}
 }

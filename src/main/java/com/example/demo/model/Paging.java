@@ -1,5 +1,8 @@
 package com.example.demo.model;
 
+import lombok.ToString;
+
+@ToString
 public class Paging {
 	private final static int PAGE_SIZE_LIST = 10;
 	private final static int PAGE_SIZE_CARD = 36;
@@ -14,7 +17,7 @@ public class Paging {
     private int nextPageNo; 	// 다음 페이지 번호
     private int finalPageNo; 	// 마지막 페이지 번호
     private int totalCount; 	// 게시 글 전체 수
-    private int from;
+    protected int from;
     
     public Paging() {
     	this.makePaging();

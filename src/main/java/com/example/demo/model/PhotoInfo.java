@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @Builder
-public class PhotoInfo {
+public class PhotoInfo extends Paging{
 	public static PhotoInfo newInstance(int boardId) {
 		PhotoInfo result = new PhotoInfo();
 		return result;
@@ -50,5 +50,6 @@ public class PhotoInfo {
 		this.thumbnailFilename = thumbnailFilename;
 		this.thumbnailSize = thumbnailSize;
 		this.thumbnailUrl = thumbnailUrl;
+		super.pageNo = pageNo;
 	}
 }

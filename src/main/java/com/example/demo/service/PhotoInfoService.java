@@ -31,7 +31,12 @@ public class PhotoInfoService implements WorkService<PhotoInfo> {
 	public int insert(PhotoInfo input) {
 		return mapper.insert(input);
 	}
-
+	public int countAll() {
+		return mapper.countAll();
+	}
+	public List<PhotoInfo> select(PhotoInfo input){
+		return mapper.select(input);
+	}
 	@Override
 	public int update(PhotoInfo input) {
 		return mapper.update(input);

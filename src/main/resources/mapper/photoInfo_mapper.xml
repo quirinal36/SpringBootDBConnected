@@ -96,4 +96,18 @@
 			</foreach>
 		</where>
 	</select>
+	
+	<select id="select" parameterType="PhotoInfo" resultType="PhotoInfo">
+		SELECT * FROM PhotoInfo
+		<where>
+			id > 0
+		</where>
+		order by id desc
+		LIMIT ${from}, ${pageSize}
+	</select>
+	
+	<select id="countAll" resultType="int">
+		SELECT count(*) FROM PhotoInfo
+	</select>
+	
 </mapper>
