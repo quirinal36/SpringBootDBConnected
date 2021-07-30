@@ -127,7 +127,7 @@ public class RestPhotoController {
 			
 			service.insert(photoInfo);
 			
-			photoInfo.setUrl("/api/v1/picture/"+photoInfo.getId());
+			photoInfo.setUrl("/api/v1/photo/picture/"+photoInfo.getId());
 			result.setData(photoInfo);
 		}catch(IOException e) {
 			e.printStackTrace();
