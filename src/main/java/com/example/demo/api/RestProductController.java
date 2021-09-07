@@ -201,6 +201,8 @@ public class RestProductController {
 		ProductVO vo = new ProductVO();
 		vo.setId(id);
 		ProductVO selected = service.selectOne(vo);
+		List<PhotoInfo> photos = service.selectPhotos(vo);
+		selected.setPhotoList(photos);
 		result.setData(selected);
 		if(selected.getId() > 0) {
 			result.setTotalCount(1);

@@ -29,6 +29,7 @@ public class ProductVO extends Paging{
 	List<ProductPhoto> photos;
 	Date wdate;
 	Date udate;
+	List<PhotoInfo> photoList;
 	
 	@Builder
 	public ProductVO(int id, String title, int capacity,
