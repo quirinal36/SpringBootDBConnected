@@ -184,7 +184,7 @@ public class RestProductController {
 		if(query.isPresent()) {
 			vo.setQuery(query.get());
 		}
-		log.info("vo pageNo2:" + vo.getPageNo());
+		
 		PagingResult result = PagingResult.successInstance();
 		List<ProductVO> list = service.select(vo);
 		result.setPageNo(vo.getPageNo());
