@@ -184,7 +184,7 @@ public class RestProductController {
 		if(query.isPresent()) {
 			vo.setQuery(query.get());
 		}
-		if(size.isEmpty()) {
+		if(!size.isPresent()) {
 			vo.setPageSize(size.get());
 		}
 		
