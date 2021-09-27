@@ -172,17 +172,20 @@ public class RestProductController {
 	@ApiOperation(value="상품 리스트", notes="1 페이지당 10개 상품을 리스트한다.", response=Result.class)
 	@GetMapping(value="list/{pageNo}")
 	public PagingResult select(@RequestParam(value="query", required=false)Optional<String> query,
-			@PathVariable(value="pageNo", required=false)Optional<Integer> pageNo){
+			@PathVariable(value="pageNo", required=false)Optional<Integer> pageNo,
+			@RequestParam(value="size", required=false)Optional<Integer>size){
 		
 		ProductVO vo = new ProductVO();
 		if(pageNo.isPresent()) {
 			vo.setPageNo(pageNo.get());
-			log.info("vo pageNo: " + vo.getPageNo());
 		}else {
 			vo.setPageNo(1);
 		}
 		if(query.isPresent()) {
 			vo.setQuery(query.get());
+		}
+		if(size.isEmpty()) {
+			vo.setPageSize(size.get());
 		}
 		
 		PagingResult result = PagingResult.successInstance();
