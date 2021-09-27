@@ -189,6 +189,12 @@ public class RestProductController {
 		List<ProductVO> list = service.select(vo);
 		result.setPageNo(vo.getPageNo());
 		result.setTotalCount(service.totalCount().size());
+		Iterator<ProductVO> iter = list.iterator();
+		while(iter.hasNext()) {
+			ProductVO product = iter.next();
+			List<PhotoInfo> photos = service.selectPhotos(vo);
+			product.setPhotoList(photos);
+		}
 		result.setData(list);
 		return result;
 	}

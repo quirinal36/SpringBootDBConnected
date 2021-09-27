@@ -33,7 +33,7 @@ public class ProductService {
 	public List<ProductVO> select(ProductVO input) {
 		int total = totalCount().size();
 		input.setTotalCount(total);
-		log.info(input.toString());
+		
 		return mapper.select(input);
 	}
 
