@@ -192,7 +192,7 @@ public class RestProductController {
 		Iterator<ProductVO> iter = list.iterator();
 		while(iter.hasNext()) {
 			ProductVO product = iter.next();
-			List<PhotoInfo> photos = service.selectPhotos(vo);
+			List<PhotoInfo> photos = service.selectPhotos(product);
 			product.setPhotoList(photos);
 		}
 		result.setData(list);
