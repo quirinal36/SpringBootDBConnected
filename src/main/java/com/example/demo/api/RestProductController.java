@@ -61,6 +61,8 @@ public class RestProductController {
 			@RequestParam(value="count", required=false) Optional<Integer> count,
 			@RequestParam int writer,
 			@RequestBody String[] pictures) {
+		log.info("add");
+		
 		Result result = Result.successInstance();
 		ProductVO vo = new ProductVO();
 		vo.setTitle(title);
@@ -185,6 +187,8 @@ public class RestProductController {
 			vo.setQuery(query.get());
 		}
 		if(!size.isPresent()) {
+			vo.setPageSize(10);
+		}else {
 			vo.setPageSize(size.get());
 		}
 		
