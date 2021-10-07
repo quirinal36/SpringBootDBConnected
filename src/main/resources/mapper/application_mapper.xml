@@ -27,6 +27,13 @@
 			LEFT JOIN users u on (a.writer_id = u.id)
 	</select>
 	
+	<select id="selectList" resultType="ApplicationVO">
+		SELECT
+			*
+		FROM 
+			application 
+	</select>
+	
 	<select id="selectById"  parameterType="ApplicationVO" resultType="ApplicationVO" >
 		SELECT
 			a.*, u.name AS username

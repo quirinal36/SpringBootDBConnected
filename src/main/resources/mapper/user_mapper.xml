@@ -96,28 +96,32 @@
 	</select>
 	<update id="update" parameterType="UserVO">
 		UPDATE users
-		SET
-			<if test="@com.example.demo.util.CommonUtil@notEmpty(name)">
-			name = '${name}',
-			</if>
-			<if test="@com.example.demo.util.CommonUtil@notEmpty(email)">
-			email = '${email}',
-			</if>
-			<if test="@com.example.demo.util.CommonUtil@notEmpty(picture)">
-			picture = '${picture}',
-			</if>
-			<if test="@com.example.demo.util.CommonUtil@notEmpty(phone)">
-			phone = '${phone}',
-			</if>
-			<if test="@com.example.demo.util.CommonUtil@notEmpty(fax)">
-			fax = '${fax}',
-			</if>
-			<if test="@com.example.demo.util.CommonUtil@notEmpty(mobile)">
-			mobile = '${mobile}',
-			</if>
-			<if test="@com.example.demo.util.CommonUtil@notEmpty(role)">
-			role = #{role}
-			</if>
+			<trim prefix="SET" suffixOverrides=",">
+				<if test="@com.example.demo.util.CommonUtil@notEmpty(name)">
+				name = '${name}',
+				</if>
+				<if test="@com.example.demo.util.CommonUtil@notEmpty(email)">
+				email = '${email}',
+				</if>
+				<if test="@com.example.demo.util.CommonUtil@notEmpty(picture)">
+				picture = '${picture}',
+				</if>
+				<if test="@com.example.demo.util.CommonUtil@notEmpty(phone)">
+				phone = '${phone}',
+				</if>
+				<if test="@com.example.demo.util.CommonUtil@notEmpty(fax)">
+				fax = '${fax}',
+				</if>
+				<if test="@com.example.demo.util.CommonUtil@notEmpty(mobile)">
+				mobile = '${mobile}',
+				</if>
+				<if test="@com.example.demo.util.CommonUtil@notEmpty(role)">
+				role = #{role},
+				</if>
+				<if test="@com.example.demo.util.CommonUtil@notEmpty(role)">
+				password = hex(AES_ENCRYPT(#{password}, SHA2(#{enc_key}, 512)))
+				</if>
+			</trim>
 		where
 			id = ${id}
 	</update>

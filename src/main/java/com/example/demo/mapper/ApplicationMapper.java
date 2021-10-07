@@ -18,4 +18,5 @@ public interface ApplicationMapper {
 	public int deletePhotos(List<ApplicationPhoto> input);
 	public int insertPhotos(List<ApplicationPhoto> list);
 	public List<PhotoInfo> selectPhotos(ApplicationVO input);
+	public List<ApplicationVO> selectList();
 }

@@ -34,6 +34,17 @@ public class ApplicationController {
 	@Autowired
 	ApplicationService service;
 	
+	@ApiOperation(value="현장진단 신청서 리스트 조회", notes="현장진단 신청서 조회", response = Result.class)
+	@GetMapping("/list")
+	public Result getList() {
+		Result result = Result.successInstance();
+		List<ApplicationVO> list = service.selectList();
+		result.setData(list);
+		result.setTotalCount(list.size());
+		return result;
+	}
+	
+	
 	@ApiImplicitParam(name="id", value="신청서 아이디", required=true, dataType="int")
 	@GetMapping("/find/{id}")
 	public Result findById(@PathVariable(name="id", required=true)Optional<Integer>applicationId) {

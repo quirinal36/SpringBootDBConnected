@@ -34,7 +34,9 @@ public class ApplicationService implements WorkService<ApplicationVO> {
 	public int update(ApplicationVO input) {
 		return mapper.update(input);
 	}
-	
+	public List<ApplicationVO> selectList(){
+		return mapper.selectList();
+	}
 	public int delete(ApplicationVO input) {
 		return mapper.delete(input);
 	}

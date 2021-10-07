@@ -54,6 +54,7 @@ public class UserService implements WorkService<UserVO> {
 
 	@Override
 	public int update(UserVO input) {
+		input.setEnc_key(SECRET_KEY);
 		return mapper.update(input);
 	}
 	
