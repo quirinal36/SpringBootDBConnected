@@ -95,7 +95,17 @@ public class RestBoardController {
 		
 		return result;
 	}
-	
+	@ApiImplicitParams({
+		@ApiImplicitParam(name="input", value="2분기 사용금액", required=true, dataType = "int"),
+		@ApiImplicitParam(name="subsidyAmount", value="받고싶은 금액", required=true, dataType = "int")
+		})
+	@GetMapping(value="/get/result")
+	public Result getResult(int input, int subsidyAmount) {
+		Result result = Result.successInstance();
+		double actualCardAmount = (subsidyAmount*10) + (input*1.03);
+		result.setData(actualCardAmount);
+		return result;
+	}
 	@GetMapping(value="/delete/{id}")
 	public Result delete(@PathVariable(value="id", required=true)int id) {
 		Result result = Result.successInstance();
