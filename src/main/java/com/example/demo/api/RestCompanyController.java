@@ -41,6 +41,19 @@ public class RestCompanyController implements RestCompanyInterface{
 		}
 		return result;
 	}
+	
+	@GetMapping("/find/exist")
+	@Override
+	public Result findByCompanyNameExactly(@RequestParam(name="param", required=true) Optional<String> param) {
+		Result result = Result.successInstance();
+		if(param.isPresent()) {
+			CompanyVO company = new CompanyVO();
+			company.setName(param.get());
+			CompanyVO list = service.selectByNameExactly(company);
+			result.setData(list);
+		}
+		return result;
+	}
 
 	@GetMapping("/find/id/{id}")
 	@Override
@@ -54,8 +67,8 @@ public class RestCompanyController implements RestCompanyInterface{
 
 	@ApiImplicitParams({
 		@ApiImplicitParam(name="name", value="company name", required=true, dataType="String"),
-		@ApiImplicitParam(name="reg_num", value="사업자번호", required=true, dataType="String"),
-		@ApiImplicitParam(name="Authorization", value="auth", required=true, dataType="String", paramType="header"),
+//		@ApiImplicitParam(name="reg_num", value="사업자번호", required=true, dataType="String"),
+//		@ApiImplicitParam(name="Authorization", value="auth", required=true, dataType="String", paramType="header"),
 	})
 	@PostMapping("/add")
 	@Override

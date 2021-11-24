@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.ConsultMapper">
+	<insert id="insert" parameterType="ConsultVO" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO consult 
+		(type, body, writer, phone, status, wdate, answerName, answerBody, adate, writerName) 
+		VALUES 
+		(
+			#{type, jdbcType=VARCHAR}, 
+			#{body, jdbcType=INTEGER}, 
+			#{writer, jdbcType=INTEGER},
+			#{phone, jdbcType=VARCHAR},
+			#{status, jdbcType=INTEGER},
+			#{wdate, jdbcType=VARCHAR},
+			#{answerName, jdbcType=VARCHAR},
+			#{answerBody, jdbcType=VARCHAR},
+			#{adate, jdbcType=VARCHAR},
+			#{writerName, jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<select id="selectAll" resultType="ConsultVO">
+		SELECT
+			p.*,
+			u.id AS writer,
+			u.name AS writerName
+		FROM 
+		consult p 
+			LEFT JOIN users u on (p.writer = u.id)
+		order by id desc
+		LIMIT ${from}, ${pageSize}
+	</select>
+			
+	<select id="selectByName" resultType="ConsultVO" parameterType="ConsultVO">
+		SELECT
+			p.*,
+			u.id AS writer,
+			u.name AS writerName
+		FROM 
+			consult p 
+			LEFT JOIN users u on (p.writer = u.id)
+		<where>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(query)">
+				writerName like '%${query}%'
+			</if>
+		</where>
+		order by id desc
+		LIMIT ${from}, ${pageSize}
+	</select>
+	
+	<select id="selectByType" resultType="ConsultVO" parameterType="ConsultVO">
+		SELECT
+			p.*,
+			u.id AS writer,
+			u.name AS writerName
+		FROM 
+			consult p 
+			LEFT JOIN users u on (p.writer = u.id)
+		<where>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(query)">
+				type like '%${query}%'
+			</if>
+		</where>
+		order by id desc
+		LIMIT ${from}, ${pageSize}
+	</select>
+	
+	<select id="selectByStatus" resultType="ConsultVO" parameterType="ConsultVO">
+		SELECT
+			p.*,
+			u.id AS writer,
+			u.name AS writerName
+		FROM 
+			consult p 
+			LEFT JOIN users u on (p.writer = u.id)
+		<where>
+			<if test="@com.example.demo.util.CommonUtil@notEmpty(query)">
+				status = '%${query}%'
+			</if>
+		</where>
+		order by id desc
+		LIMIT ${from}, ${pageSize}
+	</select>
+	
+	<select id="selectOne" resultType="ConsultVO" parameterType="ConsultVO">
+		SELECT
+			p.*,
+			u.id AS writer,
+			u.name AS writerName
+		FROM 
+			consult p 
+			LEFT JOIN users u on (p.writer = u.id)
+		<where>
+			p.id = #{id}
+		</where>
+	</select>
+	
+	<delete id="delete" parameterType="ConsultVO">
+		DELETE FROM consult
+		<where>
+			id = #{id}
+		</where>
+	</delete>
+	
+	<update id="addAnswer" parameterType="ConsultVO">
+		UPDATE consult
+		<trim prefix="SET" suffixOverrides=",">
+			answerName = #{answerName},
+			answerBody = #{answerBody},
+			status = #{status},
+		</trim>
+		<where>
+		id = ${id}
+		</where>
+	</update>
+	
+	<update id="deleteAnswer" parameterType="ConsultVO">
+		UPDATE consult
+		<trim prefix="SET" suffixOverrides=",">
+			answerName = '',
+			answerBody = '',
+			status = 0,
+		</trim>
+		<where>
+		id = ${id}
+		</where>
+	</update>
+	
+	<select id="totalCount" resultType="ProductVO">
+		SELECT id
+		FROM
+		consult
+	</select>
+	
+</mapper>

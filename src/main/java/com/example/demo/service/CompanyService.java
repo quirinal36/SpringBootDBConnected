@@ -20,6 +20,9 @@ public class CompanyService implements WorkService<CompanyVO> {
 	public List<CompanyVO> selectByName(CompanyVO input) {
 		return mapper.selectByName(input);
 	}
+	public CompanyVO selectByNameExactly(CompanyVO input) {
+		return mapper.selectByNameExactly(input);
+	}
 	@Override
 	public CompanyVO selectOne(CompanyVO input) {
 		return mapper.select(input);

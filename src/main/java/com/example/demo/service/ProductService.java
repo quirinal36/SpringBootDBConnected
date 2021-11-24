@@ -59,4 +59,16 @@ public class ProductService {
 	public List<PhotoInfo> selectPhotos(ProductVO input){
 		return mapper.selectPhotos(input);
 	}
+	
+	public int changeStatus(ProductVO input) {
+		return mapper.changeStatus(input);
+	}
+	
+	public int requestPurchase(ProductVO input) {
+		return mapper.requestPurchase(input);
+	}
+	
+	public int deleteCertification(ProductVO input) {
+		return mapper.deleteCertification(input);
+	}
 }

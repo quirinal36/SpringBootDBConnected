@@ -138,4 +138,34 @@
 	</where>
 	</delete>
 	
+	<update id="requestPurchase" parameterType="productVO">
+		UPDATE product
+		<trim prefix="SET" suffixOverrides=",">
+			status = 1,
+			buyer = #{buyer}
+		</trim>
+		<where>
+			id = ${id}
+		</where>
+	</update>
+	
+	<update id="changeStatus" parameterType="ProductVO">
+		UPDATE product
+		<trim prefix="SET" suffixOverrides=",">
+			status = #{status}
+		</trim>
+		<where>
+		id = ${id}
+		</where>
+	</update>
+	
+	<update id="deleteCertification" parameterType="ProductVO">
+		UPDATE product
+		<trim prefix="SET" suffixOverrides=",">
+			certificationId = NULL
+		</trim>
+		<where>
+		id = ${id}
+		</where>
+	</update>
 </mapper>

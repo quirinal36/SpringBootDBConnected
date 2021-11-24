@@ -21,4 +21,7 @@ public interface ProductMapper {
 	public int insertPhotos(List<ProductPhoto> list);
 	public int deletePhotos(List<ProductPhoto>list);
 	public List<PhotoInfo> selectPhotos(ProductVO input);
+	public int changeStatus(ProductVO input);
+	public int requestPurchase(ProductVO input);
+	public int deleteCertification(ProductVO input);
 }

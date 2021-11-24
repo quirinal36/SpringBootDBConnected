@@ -30,12 +30,15 @@ public class ProductVO extends Paging{
 	Date wdate;
 	Date udate;
 	List<PhotoInfo> photoList;
+	int status;
+	int buyer;
 	
 	@Builder
 	public ProductVO(int id, String title, int capacity,
 			String model, String description, String prdtCompany,
 			String prdtDate, String usingPeriod, int count,
-			int certificationId, int writer, String writerName) {
+			int certificationId, int writer, String writerName,
+			int status, int buyer) {
 		this.id = id;
 		this.title = title;
 		this.capacity = capacity;
@@ -48,5 +51,7 @@ public class ProductVO extends Paging{
 		this.certificationId = certificationId;
 		this.writer = writer;
 		this.writerName = writerName;
+		this.status=status;
+		this.buyer=buyer;
 	}
 }

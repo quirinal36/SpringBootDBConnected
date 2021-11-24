@@ -18,6 +18,13 @@
 		</where>
 	</select>
 	
+	<select id="selectByNameExactly" parameterType="CompanyVO" resultType="CompanyVO">
+		SELECT * FROM company
+		<where>
+			name = '${name}'
+		</where>
+	</select>
+	
 	<insert id="insert" parameterType="CompanyVO" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO company
 		(

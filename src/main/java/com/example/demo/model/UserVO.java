@@ -26,6 +26,7 @@ public class UserVO extends BaseTimeEntity{
 	String password;
 	String name;
 	String email;
+	String rank;
 	String picture;
 	String phone;
 	String fax;
@@ -50,7 +51,7 @@ public class UserVO extends BaseTimeEntity{
 	}
 	
 	@Builder
-	public UserVO(int id, String name, String login, String email, String picture, Role roleType, String password,
+	public UserVO(int id, String name, String login, String email, String rank, String picture, Role roleType, String password,
 			String phone, String fax, String mobile, int pictureId, int companyId, int role) {
 		this.id = id;
 		this.name = name;
@@ -59,6 +60,7 @@ public class UserVO extends BaseTimeEntity{
 		this.roleType = roleType;
 		this.password = password;
 		this.email = email;
+		this.rank = rank;
 		this.phone = phone;
 		this.fax = fax;
 		this.mobile = mobile;
@@ -91,6 +93,7 @@ public class UserVO extends BaseTimeEntity{
 		json.put("roleType", this.roleType);
 		json.put("login", this.login);
 		json.put("email", this.email);
+		json.put("rank", this.rank);
 		json.put("picture", this.picture);
 		json.put("name", this.name);
 		json.put("phone", this.phone);

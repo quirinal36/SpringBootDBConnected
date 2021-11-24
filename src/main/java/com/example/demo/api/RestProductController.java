@@ -205,6 +205,99 @@ public class RestProductController {
 		result.setData(list);
 		return result;
 	}
+
+	@ApiImplicitParams({
+		@ApiImplicitParam(name="id", value="id", required=true, dataType="int"),
+		@ApiImplicitParam(name="status", value="0-대기, 1-진행중, 2-완료", required=true, dataType="int"),
+		@ApiImplicitParam(name="Authorization", value="auth", required=true, dataType="String", paramType="header")
+	})
+	@ApiOperation(value="거래 상태 변경", notes="거래 상태 변경", response = Result.class)
+	@PostMapping(value="update/status")
+	public Result changeStatus(
+			@RequestParam(value="id")int id,
+			@RequestHeader String Authorization,
+			@RequestParam(value="status")int status
+			) {
+		Result result = Result.successInstance();
+		
+		ProductVO vo = new ProductVO();
+		vo.setId(id);
+		ProductVO selected = service.selectOne(vo);
+		selected.setStatus(status);
+		if(service.changeStatus(selected)>0) {
+			result.setData(selected);
+			result.setTotalCount(1);
+		}
+		
+		return result;
+	}
+	
+	@ApiImplicitParams({
+		@ApiImplicitParam(name="id", value="id", required=true, dataType="int"),
+		@ApiImplicitParam(name="buyer", value="buyer", required=true, dataType="int"),
+		@ApiImplicitParam(name="Authorization", value="auth", required=true, dataType="String", paramType="header")
+	})
+	@ApiOperation(value="구매 요청", notes="구매 요청", response=Result.class)
+	@PostMapping(value="request")
+	public Result requestPurchase(
+			@RequestParam(value="id", required=true)int id,
+			@RequestHeader String Authorization,
+			@RequestParam(value="buyer", required=true)int buyer) {
+		Result result = Result.successInstance();
+		
+		ProductVO vo = new ProductVO();
+		vo.setId(id);
+		ProductVO selected = service.selectOne(vo);
+		selected.setBuyer(buyer);
+		if(service.requestPurchase(selected)>0) {
+			result.setData(selected);
+			result.setTotalCount(1);
+		}
+		
+		return result;
+	}
+	
+	@ApiImplicitParams({
+		@ApiImplicitParam(name="id", value="id", required=true, dataType="int"),
+		@ApiImplicitParam(name="Authorization", value="auth", required=true, dataType="String", paramType="header")
+	})
+	@ApiOperation(value="구매 요청 취소", notes="구매 요청 취소", response=Result.class)
+	@PostMapping(value="request/cancel")
+	public Result cancelRequestPurchase(
+			@RequestParam(value="id", required=true)int id,
+			@RequestHeader String Authorization) {
+		Result result = Result.successInstance();
+		
+		ProductVO vo = new ProductVO();
+		vo.setId(id);
+		ProductVO selected = service.selectOne(vo);
+		selected.setStatus(0);
+		selected.setBuyer(0);
+		if(service.changeStatus(selected)>0) {
+			result.setData(selected);
+			result.setTotalCount(1);
+		}
+		
+		return result;
+	}
+
+	@ApiImplicitParam(name="id", value="id", required=true, dataType="int")
+	@ApiOperation(value="제품 인증서 삭제", notes="제품 인증서 삭제", response=Result.class)
+	@GetMapping(value="/certification/delete/{id}")
+	public Result deleteCertification(@PathVariable(value="id", required=true)int id) {
+		Result result = Result.successInstance();
+		
+		ProductVO vo = new ProductVO();
+		vo.setId(id);
+		ProductVO selected = service.selectOne(vo);
+		if(service.deleteCertification(selected)>0){
+			result.setData(selected);
+			result.setTotalCount(1);
+		}
+		
+		return result;
+	}
+	
 	
 	@ApiImplicitParam(name="id", value="id", required=true, dataType="int")
 	@ApiOperation(value="상품 상세화면", notes="상품 상세화면", response=Result.class)

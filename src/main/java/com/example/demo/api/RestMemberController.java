@@ -147,6 +147,7 @@ public class RestMemberController {
 		@ApiImplicitParam(name="password", value="user password", required=true, dataType="String"),
 		@ApiImplicitParam(name="name", value="user name", required=false, dataType="String"),
 		@ApiImplicitParam(name="email", value="user email", required=true, dataType="String"),
+		@ApiImplicitParam(name="rank", value="user rank", required=true, dataType="String"),
 		@ApiImplicitParam(name="phone", value="user phone", required=false, dataType="String"),
 		@ApiImplicitParam(name="fax", value="user fax", required=false, dataType="String"),
 		@ApiImplicitParam(name="mobile", value="user mobile", required=false, dataType="String"),
@@ -160,6 +161,7 @@ public class RestMemberController {
 			@RequestParam(name="password")Optional<String>password,
 			@RequestParam(name="name", required=false)Optional<String>name,
 			@RequestParam(name="email", required=true)Optional<String>email,
+			@RequestParam(name="rank", required=true)Optional<String> rank,
 			@RequestParam(name="phone", required=false)Optional<String>phone,
 			@RequestParam(name="fax", required=false)Optional<String>fax,
 			@RequestParam(name="mobile", required=false)Optional<String>mobile,
@@ -173,6 +175,7 @@ public class RestMemberController {
 			.password(password.get());
 		if(name.isPresent()) user.name(name.get());
 		if(email.isPresent()) user.email(email.get());
+		if(rank.isPresent()) user.rank(rank.get());
 		if(phone.isPresent()) user.phone(phone.get());
 		if(fax.isPresent()) user.fax(fax.get());
 		if(mobile.isPresent()) user.mobile(mobile.get());
